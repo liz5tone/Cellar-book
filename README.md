@@ -2,7 +2,7 @@
 
 A private wine journal for family and friends.
 
-**Open it:** https://liz5tone.github.io/cellar-book/
+**Open it:** https://liz5tone.github.io/Cellar-book/
 
 - Log bottles with photos, ratings, critic scores, pairings and where you bought them.
 - Every wine page takes on its region's colors and scenery.
