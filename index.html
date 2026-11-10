@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cellar Book</title>
+<meta name="theme-color" content="#0B0B0B">
+<meta name="description" content="A private wine journal: log bottles, regions, pairings and where you bought them.">
+<script>
+if(!window.claude){[["manifest","manifest.webmanifest"],["apple-touch-icon","icons/apple-touch-icon.png"],["icon","icons/icon-192.png"]].forEach(function(a){var l=document.createElement("link");l.rel=a[0];l.href=a[1];document.head.appendChild(l)});
+var m=document.createElement("meta");m.name="apple-mobile-web-app-capable";m.content="yes";document.head.appendChild(m);
+var t=document.createElement("meta");t.name="apple-mobile-web-app-title";t.content="Cellar Book";document.head.appendChild(t);
+if("serviceWorker" in navigator&&location.protocol==="https:")window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: a Manhattan wine bar after dark. Black and white with hairlines, an editorial serif for names and numbers, a clean grotesk for everything else, champagne gold for the one action. Regions lend a scenery band and accent colour. */
+:root{
+  --cobalt:#0B0B0B;
+  --cobalt-deep:#0B0B0B;
+  --sea:#EFEFEC;
+  --wash:#F6F6F3;
+  --white:#FFFFFF;
+  --cypress:#0B0B0B;
+  --cypress-soft:#ECECE8;
+  --brass:#0B0B0B;
+  --taxi:#CBB07A;
+  --ink:#0B0B0B;
+  --muted:#5C5C58;
+  --line:#DEDED9;
+  --danger:#A3283B;
+  --f-display:"Instrument Serif", "Didot", Georgia, serif;
+  --f-body:"Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --t-red:#7B1E33; --t-white:#E2CC77; --t-rose:#EE9FA6; --t-sparkling:#8FB8E6; --t-dessert:#6B3415; --t-orange:#F07A1A; --t-na:#5FA37A; --t-green:#B9D45A;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--wash);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--cobalt);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.app{max-width:820px;margin:0 auto;padding:0 16px calc(96px + env(safe-area-inset-bottom))}
+header.top{background:var(--ink);color:var(--white);padding:calc(18px + env(safe-area-inset-top)) 20px 20px;margin:0 -16px}
+.top-inner{max-width:788px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.brand{display:flex;flex-direction:column;align-items:flex-start}
+.lines{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;max-width:150px}
+.brand h1{font-family:var(--f-display);font-weight:400;font-size:58px;line-height:.9;margin:0;letter-spacing:-.01em}
+.brand h1 em{font-style:italic;color:var(--taxi)}
+.brand p{margin:12px 0 0;font-size:11px;color:#BDBDB7;letter-spacing:.22em;text-transform:uppercase;font-weight:600}
+.bar{background:var(--ink);color:#BDBDB7;margin:0 -20px 18px;padding:calc(8px + env(safe-area-inset-top)) 20px 8px;font-size:10.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid #2A2A28}
+.bar-inner{max-width:788px;margin:0 auto;display:flex;justify-content:space-between;gap:12px}
+.sync{letter-spacing:.14em;opacity:.75;white-space:nowrap}
+.meander{height:14px;background-color:var(--white);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14' viewBox='0 0 28 14'%3E%3Cpath d='M0 13h4V3h16v8h-8V7h4' fill='none' stroke='%231747A6' stroke-width='2'/%3E%3Cpath d='M16 7v0M20 13h8' fill='none' stroke='%231747A6' stroke-width='2'/%3E%3C/svg%3E");background-repeat:repeat-x;background-size:28px 14px;margin:0 -16px}
+
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0 6px}
+.stat{min-width:0;background:var(--white);border:1px solid var(--line);border-radius:0;padding:12px 14px}
+.stat b{display:block;font-family:var(--f-display);font-weight:600;font-size:26px;color:var(--cobalt-deep);line-height:1.1;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat span{font-size:12px;color:var(--muted)}
+
+.section-title{font-family:var(--f-display);font-weight:500;font-size:30px;margin:22px 0 10px;color:var(--cobalt-deep);text-wrap:balance}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--white);border-radius:999px;padding:7px 15px;font-weight:600!important;font-weight:500;font-size:13px;letter-spacing:.06em;text-transform:uppercase;display:inline-flex;align-items:center;gap:7px}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--white)}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.dot.red{background:var(--t-red)}.dot.white{background:var(--t-white)}.dot.rose{background:var(--t-rose)}.dot.sparkling{background:var(--t-sparkling)}.dot.dessert{background:var(--t-dessert)}.dot.orange{background:var(--t-orange)}.dot.na{background:var(--t-na)}.dot.green{background:var(--t-green)}
+
+.toolbar{display:flex;gap:8px;margin:6px 0 12px}
+.search{flex:1;display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--line);border-radius:4px;padding:0 12px}
+.search input{border:0;outline:0;background:transparent;padding:10px 0;width:100%}
+.search:focus-within{border-color:var(--cobalt)}
+select.sort{border:1px solid var(--line);background:var(--white);border-radius:4px;padding:0 10px;font-weight:600;font-size:14px}
+
+.active-filter{display:flex;align-items:center;gap:8px;background:var(--cypress-soft);color:var(--cypress);border-radius:4px;padding:8px 12px;margin-bottom:12px;font-weight:600;font-size:14px}
+.active-filter button{margin-left:auto;border:0;background:var(--cypress);color:var(--white);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600}
+.banner{background:var(--white);border:1px solid var(--line);border-left:2px solid var(--taxi);color:var(--ink);border-radius:4px;padding:10px 14px;font-size:14px;margin-bottom:12px}
+
+.list{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:700px){.list{grid-template-columns:1fr 1fr}}
+.card{position:relative;background:var(--white);border:1px solid var(--line);border-radius:0;padding:14px 14px 14px 18px;text-align:left;display:flex;gap:12px;width:100%;overflow:hidden;transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--ink)}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--stripe,var(--line))}
+.thumb{width:56px;height:76px;border-radius:0;flex:0 0 auto;background:var(--sea);object-fit:cover;display:flex;align-items:center;justify-content:center}
+.card-body{min-width:0;flex:1;display:flex;flex-direction:column;gap:4px}
+.card h3{margin:0;font-size:16px;font-weight:700;line-height:1.3}
+.meta{font-size:13px;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.stars{color:var(--brass);letter-spacing:1px;font-size:15px;white-space:nowrap}
+.stars .off{color:var(--line)}
+.stars .halfstar{background:linear-gradient(90deg,var(--brass) 50%,var(--line) 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.score{background:var(--white);color:var(--ink);border:1px solid var(--ink);font-weight:600;font-size:12px;border-radius:2px;padding:2px 7px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.score small{font-weight:500;opacity:.85}
+.pair{background:var(--cypress-soft);color:var(--cypress);font-size:12px;font-weight:500;border-radius:2px;padding:2px 9px}
+.tag-example{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cobalt);background:var(--sea);padding:2px 8px;border-radius:999px}
+.buy{color:var(--cypress);font-weight:700;font-size:12px}
+
+.empty{text-align:center;color:var(--muted);padding:40px 16px;background:var(--white);border:1px dashed var(--line);border-radius:16px}
+
+.groups{display:flex;flex-direction:column;gap:14px}
+.group{background:var(--white);border:1px solid var(--line);border-radius:0;overflow:hidden}
+.group h3{margin:0;padding:12px 16px;background:var(--white);color:var(--ink);font-family:var(--f-display);font-weight:600;font-size:24px;gap:10px;display:flex;justify-content:space-between;align-items:baseline}
+.group h3 span{font-family:var(--f-body);font-size:13px;color:var(--muted);font-weight:400}
+.grow{display:flex;align-items:center;gap:10px;width:100%;border:0;border-top:1px solid var(--line);background:transparent;padding:12px 16px;text-align:left}
+.group h3{border-left:6px solid var(--g,var(--ink))}
+.rtag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:2px 8px;align-self:flex-start}
+.grow:hover{background:var(--sea)}
+.grow .name{font-weight:600;flex:1;min-width:0}
+.grow .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.pair-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ptile{background:var(--white);border:1px solid var(--line);border-top:3px solid var(--ink);border-radius:4px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:4px}
+.ptile:hover{border-color:var(--ink)}
+.ptile b{font-size:16px}
+.ptile span{font-size:13px;color:var(--muted)}
+.ptile .dots{display:flex;gap:4px;margin-top:4px}
+
+nav.bottom{position:fixed;left:0;right:0;bottom:0;background:var(--ink);border-top:1px solid #2A2A28;padding:8px 12px calc(8px + env(safe-area-inset-bottom));z-index:20}
+.nav-inner{max-width:560px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr auto 1fr 1fr;gap:6px;align-items:center}
+.navbtn{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9A9A94;padding:6px 0;border-radius:10px}
+.navbtn svg{width:22px;height:22px}
+.navbtn[aria-current="page"]{color:var(--white)}
+.navbtn[aria-current="page"] svg{color:var(--taxi)}
+.add{border:0;background:var(--taxi);color:var(--ink);font-weight:600!important;font-weight:500;letter-spacing:.12em;text-transform:uppercase;font-size:13px;border-radius:3px;padding:12px 20px;display:flex;align-items:center;gap:6px;box-shadow:0 6px 16px rgba(31,29,26,.22)}
+
+/* sheet */
+.sheet-wrap{position:fixed;inset:0;background:rgba(11,11,11,.55);display:none;align-items:flex-end;justify-content:center;z-index:40}
+.sheet-wrap.open{display:flex}
+.sheet{background:var(--wash);width:100%;max-width:640px;max-height:92%;overflow:auto;border-radius:0;padding:18px 18px calc(24px + env(safe-area-inset-bottom))}
+@media (min-width:700px){.sheet-wrap{align-items:center}.sheet{border-radius:0;max-height:88%}}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.sheet-head h2{font-family:var(--f-display);font-weight:500;font-size:30px;margin:0;color:var(--cobalt-deep);line-height:1.15;text-wrap:balance}
+.x{border:1px solid var(--line);background:var(--white);color:var(--ink);border-radius:999px;width:36px;height:36px;font-size:20px;line-height:1;flex:0 0 auto}
+
+form{display:flex;flex-direction:column;gap:14px}
+.f{display:flex;flex-direction:column;gap:5px}
+.f label,.flabel{font-size:13px;font-weight:700;color:var(--muted)}
+.f input,.f select,.f textarea,.crow input,.crow select{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--white);width:100%}
+.f input:focus,.f select:focus,.f textarea:focus,.crow input:focus,.crow select:focus{border-color:var(--cobalt);outline:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.types{display:flex;flex-wrap:wrap;gap:8px}
+.types .chip{padding:6px 12px}
+.pchips{display:flex;flex-wrap:wrap;gap:6px}
+.pchip{border:1px solid var(--line);background:var(--white);color:var(--ink);border-radius:2px;padding:5px 12px;font-size:13px;font-weight:600}
+.pchip[aria-pressed="true"]{background:var(--cypress);border-color:var(--cypress);color:var(--white)}
+.star-input{display:flex;align-items:center;gap:10px}
+.star-input .si{display:flex;gap:2px}
+.star-input .si button{border:0;background:transparent;font-size:30px;line-height:1;padding:0 1px;color:var(--line);position:relative}
+.star-input .si button.on{color:var(--brass)}
+.star-input .si button.half{background:linear-gradient(90deg,var(--brass) 50%,var(--line) 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.star-input output{font-weight:700;color:var(--cobalt-deep);font-variant-numeric:tabular-nums;min-width:28px}
+.crow{display:grid;grid-template-columns:1fr 74px 78px 36px;gap:6px;align-items:center}
+.crow input[type=number]{padding:10px 8px}
+.crow select{padding:10px 6px}
+.del{border:0;background:var(--sea);color:var(--cobalt-deep);border-radius:8px;height:40px;font-size:18px}
+.link{border:0;background:transparent;color:var(--cobalt);font-weight:700;padding:4px 0;text-align:left}
+.photo-pick{display:flex;align-items:center;gap:12px}
+.photo-pick img{width:56px;height:76px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.btn{border:0;border-radius:3px;padding:12px 18px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-size:13px}
+.btn.primary{background:var(--cobalt);color:var(--white)}
+.btn.ghost{background:var(--sea);color:var(--cobalt-deep)}
+.btn.danger{background:#FBE9EC;color:var(--danger)}
+.actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.check{display:flex;align-items:center;gap:10px;font-weight:600}
+.check input{width:20px;height:20px;accent-color:var(--cypress)}
+.err{color:var(--danger);font-size:13px;font-weight:600}
+
+.detail-hero{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.detail-hero .thumb{width:84px;height:116px}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:14px;margin:12px 0}
+.kv dt{color:var(--muted);font-weight:600}
+.kv dd{margin:0}
+.critics{display:flex;flex-direction:column;gap:6px;margin:6px 0 12px}
+.critic{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--white);border:1px solid var(--line);border-radius:4px;padding:8px 12px}
+.critic b{font-variant-numeric:tabular-nums;color:var(--cobalt-deep)}
+.notes{background:var(--white);border-left:2px solid var(--ink);font-family:var(--f-display);font-style:italic;font-size:21px;line-height:1.35;padding:10px 14px;border-radius:0 10px 10px 0;white-space:pre-wrap;margin:8px 0 16px}
+.h4{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.24em;margin:14px 0 6px}
+.confirm{background:#FBE9EC;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;margin-top:10px}
+/* regional theme on a wine's page: same paper and type as the app; the region lends its scenery band and accent colour */
+.sheet.themed{padding:0;background:var(--th-bg)}
+.sheet.themed .stars{color:var(--th-star)}
+.sheet.themed .stars .halfstar{background:linear-gradient(90deg,var(--th-star) 50%,var(--line) 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sheet.themed .critic{border-color:transparent}
+.sheet.themed .x{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.92);border:0}
+.sheet.themed{position:relative}
+.th-band{line-height:0}
+.th-band svg,.group .orn svg{height:110px}
+.th-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px 4px}
+.th-label{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--th-hink);background:var(--th-hbg);padding:5px 12px 5px 10px;margin-bottom:10px}
+.th-label i{width:8px;height:8px;border-radius:50%;background:var(--th-hink);display:inline-block}
+.th-top h2{font-family:var(--f-display);font-weight:500;font-size:34px;line-height:1.05;margin:0;text-wrap:balance}
+.th-sub{margin-top:6px;color:var(--muted);font-size:14px}
+.th-body{padding:12px 18px calc(24px + env(safe-area-inset-bottom))}
+.sheet.themed .critic b{color:var(--th-accent)}
+.sheet.themed .pair{background:var(--th-pairBg);color:var(--th-pairInk)}
+.sheet.themed .notes{border-left:4px solid var(--th-hbg)}
+.sheet.themed .h4{display:flex;align-items:center;gap:8px}
+.sheet.themed .h4::before{content:"";width:18px;height:3px;background:var(--th-hbg)}
+.theme-pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.swatch{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.08)}
+.group .orn{line-height:0}
+.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--cobalt-deep);color:var(--white);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+@media (max-width:420px){.stat b{font-size:20px}.grid2{grid-template-columns:1fr}.crow{grid-template-columns:1fr 64px 70px 36px}}
+.stat b,.section-title,.sheet-head h2,.th-top h2,.group h3{font-family:var(--f-display)!important;font-weight:400!important;letter-spacing:-.005em;line-height:1}
+.stat b{font-size:34px!important}
+.section-title{font-size:40px!important}
+.group h3{font-size:30px!important}
+.th-top h2,.sheet-head h2{font-size:40px!important}
+.stats{gap:0}.stat+.stat{border-left:0}
+.stat span,.h4,.th-label{letter-spacing:.18em;text-transform:uppercase;font-size:10.5px!important;font-weight:600}
+:focus-visible{outline:2px solid var(--taxi);outline-offset:2px}
+.stat span{letter-spacing:.1em!important;font-size:10px!important;white-space:nowrap}
+.notes{border-radius:0!important}
+.tag-example{border-radius:0;letter-spacing:.14em}
+.glass{width:84px;height:124px;flex:0 0 auto;margin:-10px -6px -14px 0}
+.glass canvas{display:block}
+.ask{background:var(--white);border:1px solid var(--line);border-top:3px solid var(--ink);padding:18px 16px;margin:20px 0 6px;display:flex;flex-direction:column;gap:12px}
+.ask-kicker{font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A6F3A}
+.ask h3{font-family:var(--f-display);font-weight:400;font-size:32px;line-height:1;margin:0}
+.ask-ex{display:flex;flex-wrap:wrap;gap:6px}
+.ask-ex .pchip{background:var(--wash)}
+.ask-result{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line);padding-top:14px}
+.ask-intro{font-family:var(--f-display);font-style:italic;font-size:21px;line-height:1.3;margin:0}
+.pick{display:flex;border:1px solid var(--line);background:var(--white)}
+.pick-band{width:8px;flex:0 0 auto}
+.pick-body{padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.pick h4{margin:0;font-size:17px;font-weight:700;line-height:1.25}
+.pick-why{margin:0;font-size:14px}
+.pick .btn{align-self:flex-start;padding:8px 12px;font-size:12px}
+.stat:nth-child(3) b{font-size:24px!important;line-height:1.4}
+.tgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:4px 0 12px}
+.tcell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:60px;padding:8px 4px;background:var(--white);border:1px solid var(--line);font-size:12.5px;font-weight:600;line-height:1.1;text-align:center;color:var(--ink)}
+.tcell small{font-size:11px;font-weight:500;color:var(--muted)}
+.tcell .dot{width:12px;height:12px}
+.tdots{display:flex;gap:2px}.tdots .dot{width:8px;height:8px}
+.tcell[aria-pressed="true"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.tcell[aria-pressed="true"] small{color:#BDBDB7}
+.more summary{cursor:pointer;font-weight:600;font-size:14px;padding:4px 0}
+.more[open]{display:flex;flex-direction:column;gap:12px}
+.card h3{font-size:17px}
+.card .row{gap:8px}
+.brand .sync{border:0;background:transparent;padding:0;cursor:pointer;margin:10px 0 0;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#9A9A94}
+.card.rcard{flex-direction:column;padding:0;gap:0;background:var(--rb);border:0;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.card.rcard::before{display:none}
+.card.rcard:hover{border:0;box-shadow:0 0 0 2px var(--rh)}
+.card-band{position:relative;line-height:0}
+.card-band svg{height:88px}
+.card-label{position:absolute;left:12px;top:10px;background:var(--rh);color:var(--rk);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:5px 10px;line-height:1.2;box-shadow:0 0 0 1px rgba(255,255,255,.6)}
+.card-main{display:flex;gap:14px;padding:0 14px 14px}
+.card-main .thumb{width:74px;height:98px;margin-top:-44px;border:3px solid #FFFFFF;box-shadow:0 6px 14px rgba(0,0,0,.2);position:relative;flex:0 0 auto}
+.card-main img.thumb{object-fit:cover}
+.rcard .card-body{padding-top:10px;gap:6px}
+.rcard h3{font-size:18px}
+.rcard .vin{font-weight:500;color:var(--muted)}
+.rcard .stars{color:var(--rs)}
+.rcard .stars .halfstar{background:linear-gradient(90deg,var(--rs) 50%,var(--line) 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.rcard .meta{font-size:13px}
+.dglass{width:76px;height:112px;flex:0 0 auto;margin-top:-6px}
+.dglass canvas{display:block}
+.globe-box{background:#0B0B0B;margin:0 0 14px;padding:0 0 12px;overflow:hidden}
+.globe-wrap{position:relative;margin:0 auto;display:flex;justify-content:center}
+.globe-wrap canvas{display:block}
+.globe-labels{position:absolute;inset:0;pointer-events:none}
+.globe-label{position:absolute;left:0;top:0;pointer-events:auto;border:0;background:var(--c);color:var(--k);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;white-space:nowrap;transition:opacity .2s;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.globe-hint{margin:0;color:#9A9A94;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;text-align:center}
+.map-wrap{position:relative;margin:0 auto}
+.map-wrap canvas{display:block;cursor:grab}
+.map-ctrls{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px}
+.map-ctrls button{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid rgba(255,255,255,.25);background:rgba(11,11,11,.7);color:#FFFFFF;font-size:20px;line-height:1}
+.map-bar{position:absolute;left:0;right:0;bottom:0;padding:28px 12px 10px;background:linear-gradient(to top,rgba(11,11,11,.92) 55%,rgba(11,11,11,0));display:flex;align-items:center;justify-content:space-between;gap:10px;color:#BDBDB7;font-size:12px;pointer-events:none}
+.map-bar b{color:#FFFFFF}
+.map-bar .map-see{pointer-events:auto;border:0;background:var(--taxi);color:var(--ink);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:9px 12px}
+.map-loading{color:#9A9A94;text-align:center;padding:120px 0;margin:0;font-size:13px}
+.globe-box{padding:0!important}
+.shop-note{font-size:13px;color:var(--muted);margin:-2px 0 12px;line-height:1.45}
+.shop-list{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:700px){.shop-list{grid-template-columns:1fr 1fr}}
+.sitem{display:flex;background:var(--white);border:1px solid var(--line)}
+.sbar{width:8px;flex:0 0 auto}
+.sbody{padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.sitem h4{margin:0;font-size:16px;font-weight:700;line-height:1.25}
+.snote{margin:0;font-size:13.5px}
+.spill{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--ink);padding:1px 7px}
+.sadd{padding:7px 10px!important;font-size:11.5px!important}
+.shop-src{margin:18px 0 0;font-size:13px}.shop-src ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.shop-src a{color:var(--ink)}
+.add{padding:12px 14px!important}
+.navbtn{font-size:10.5px!important}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="top-inner">
+      <div class="brand">
+        <h1>Cellar <em>Book</em></h1>
+        <button type="button" class="sync" id="sync" aria-label="Your data and backups">Loading…</button>
+      </div>
+      <div class="glass" id="glass" aria-hidden="true"></div>
+
+    </div>
+  </header>
+
+  <main id="view"></main>
+</div>
+
+<nav class="bottom" aria-label="Main">
+  <div class="nav-inner">
+    <button class="navbtn" data-nav="journal" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l-1 7a3 3 0 0 1-6 0z"/><path d="M12 12v8M8 22h8"/></svg>Journal</button>
+    <button class="navbtn" data-nav="regions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>Regions</button>
+    <button class="add" id="addBtn" aria-label="Add a wine"><span aria-hidden="true" style="font-size:20px;line-height:1">+</span> Add</button>
+    <button class="navbtn" data-nav="shop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 13H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>Shop</button>
+    <button class="navbtn" data-nav="pairings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v9M5 2v5a2 2 0 0 0 4 0V2M7 11v11"/><path d="M17 2c-2 2-2.5 5-2 8h3v12"/></svg>Pairings</button>
+  </div>
+</nav>
+
+<div class="sheet-wrap" id="sheetWrap" aria-hidden="true">
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+const TYPES=[{k:"red",l:"Red",b:"R"},{k:"white",l:"White",b:"W"},{k:"green",l:"Vinho Verde",b:"VV",s:"Vinho Verde"},{k:"rose",l:"Rosé",b:"Ro"},{k:"sparkling",l:"Sparkling",b:"S",s:"Bubbly"},{k:"dessert",l:"Dessert",b:"D"},{k:"orange",l:"Orange",b:"O"},{k:"na",l:"Non-alcoholic",b:"NA",s:"No alcohol"}];
+const TYPE_LABEL=Object.fromEntries(TYPES.map(t=>[t.k,t.l]));
+const PAIRINGS=["Brunch","Lunch","BBQ","Beef","Lamb","Pork","Poultry","Fish","Shellfish","Pasta","Pizza","Soup & stew","Salad","Cheese","Charcuterie","Vegetarian","Spicy food","Takeout","Dessert","Aperitif"];
+const CRITICS=["Wine Spectator","Wine Advocate (Parker)","James Suckling","Decanter","Wine Enthusiast","Vinous","Jancis Robinson","Jeb Dunnuck","Wine & Spirits","Sommelier / friend"];
+const LS_KEY="oinos-wines-v1";
+
+const EXAMPLES=[
+  {id:"ex1",example:true,name:"Kyma Estate Assyrtiko",producer:"Kyma Estate",vintage:"2022",type:"white",grape:"Assyrtiko",country:"Greece",region:"Santorini",myRating:4.5,critics:[{by:"Decanter",score:93,scale:100}],pairings:["Fish","Shellfish","Aperitif"],notes:"Lemon zest, flint and sea spray. Bone dry with a long saline finish.",price:"34",tasted:"2026-10-18",buyAgain:true,createdAt:4},
+  {id:"ex2",example:true,name:"Vallerosa Brunello di Montalcino",producer:"Vallerosa",vintage:"2018",type:"red",grape:"Sangiovese",country:"Italy",region:"Tuscany",myRating:4,critics:[{by:"Wine Spectator",score:94,scale:100},{by:"Jancis Robinson",score:17,scale:20}],pairings:["Beef","Lamb","Cheese"],notes:"Sour cherry, leather, dried herbs. Firm tannins, will keep improving.",price:"62",tasted:"2026-10-02",buyAgain:false,createdAt:3},
+  {id:"ex3",example:true,name:"Maison Lune Côtes de Provence",producer:"Maison Lune",vintage:"2024",type:"rose",grape:"Grenache, Cinsault",country:"France",region:"Provence",myRating:3.5,critics:[],pairings:["Aperitif","Fish","Vegetarian"],notes:"Pale onion skin. Strawberry and white peach, crisp.",price:"22",tasted:"2026-09-14",buyAgain:true,createdAt:2},
+  {id:"ex4",example:true,name:"Atelier Brut Réserve",producer:"Atelier",vintage:"NV",type:"sparkling",grape:"Chardonnay, Pinot Noir",country:"France",region:"Champagne",myRating:4.5,critics:[{by:"James Suckling",score:92,scale:100}],pairings:["Aperitif","Shellfish","Poultry"],notes:"Brioche, green apple, very fine bubbles.",price:"48",tasted:"2026-08-30",buyAgain:true,createdAt:1}
+];
+
+EXAMPLES.push({id:"ex5",example:true,name:"Su Nuraxi Cannonau di Sardegna",producer:"Su Nuraxi",vintage:"2021",type:"red",grape:"Cannonau",country:"Italy",region:"Sardegna",myRating:4,critics:[{by:"Vinous",score:91,scale:100}],pairings:["Lamb","Pork","Cheese"],notes:"Wild berries, myrtle and Mediterranean scrub. Warm, generous, soft tannins.",price:"26",tasted:"2026-10-25",buyAgain:true,createdAt:5});
+
+/* ---------- regional themes ---------- */
+let OID=0;
+const uid=()=>"o"+(++OID);
+const land=(h,inner)=>'<svg aria-hidden="true" width="100%" height="'+h+'" viewBox="0 0 390 '+h+'" preserveAspectRatio="xMidYMax slice" style="display:block">'+inner+"</svg>";
+const strip=(id,w,h,y,inner)=>'<defs><pattern id="'+id+'" x="0" y="'+y+'" width="'+w+'" height="'+h+'" patternUnits="userSpaceOnUse">'+inner+'</pattern></defs><rect y="'+y+'" width="390" height="'+h+'" fill="url(#'+id+')"/>';
+const ORN={
+  meander:()=>{const id=uid();return land(90,'<rect width="390" height="90" fill="#1E5BD8"/><circle cx="330" cy="20" r="11" fill="#FFFFFF"/><rect y="44" width="390" height="32" fill="#0B3A8F"/><path d="M228 52 h120" stroke="#3E7BE6" stroke-width="2"/><path d="M0 76 L0 40 L28 40 L28 30 L64 30 L64 38 L96 38 L96 26 L132 26 L132 42 L168 42 L168 50 L196 50 L214 76Z" fill="#FFFFFF"/><path d="M34 30 a12 12 0 0 1 24 0Z M102 26 a12 12 0 0 1 24 0Z" fill="#1747A6"/><path d="M46 18 v-6 M114 14 v-6" stroke="#FFFFFF" stroke-width="2"/><g fill="#1747A6"><rect x="8" y="48" width="6" height="8"/><rect x="40" y="40" width="5" height="9"/><rect x="74" y="46" width="6" height="8"/><rect x="108" y="36" width="5" height="9"/><rect x="142" y="52" width="6" height="8"/><rect x="176" y="58" width="6" height="7"/></g>'+strip(id,28,14,76,'<rect width="28" height="14" fill="#FFFFFF"/><path d="M0 13h4V3h16v8h-8V7h4M20 13h8" fill="none" stroke="#1747A6" stroke-width="2.2"/>'))},
+  textile:()=>{const id=uid();return land(90,'<rect width="390" height="90" fill="#12A4B4"/><circle cx="70" cy="22" r="12" fill="#FFD25E"/><path d="M0 58 C80 46 170 52 250 44 S360 40 390 46 V70 H0Z" fill="#0A7F8C"/><path d="M290 46 L296 22 L320 22 L326 46Z" fill="#D9B98A"/><path d="M292 30 h32 M291 38 h34" stroke="#B3925F" stroke-width="2"/>'+strip(id,24,20,70,'<rect width="24" height="20" fill="#F6E7C8"/><path d="M12 2 L20 10 L12 18 L4 10Z" fill="#C8352B"/><path d="M12 6 L16 10 L12 14 L8 10Z" fill="#F6E7C8"/><path d="M0 0h4v3h3v3H0zM24 20h-4v-3h-3v-3h7z" fill="#5B2A4E"/><circle cx="12" cy="10" r="1.6" fill="#E3A21A"/>'))},
+  waves:()=>land(90,'<rect width="390" height="90" fill="#0A4F8F"/><circle cx="318" cy="24" r="14" fill="#FF7A59"/><path d="M0 48 L40 28 L70 38 L120 12 L160 32 L200 22 L236 42 L390 42 V90 H0Z" fill="#123E6B"/><path d="M0 58 Q24 50 48 58 T96 58 T144 58 T192 58 T240 58 T288 58 T336 58 T390 58 V90 H0Z" fill="#1F8AD1"/><path d="M0 68 Q24 61 48 68 T96 68 T144 68 T192 68 T240 68 T288 68 T336 68 T390 68" fill="none" stroke="#FF8A6B" stroke-width="2.5"/><path d="M0 74 Q24 67 48 74 T96 74 T144 74 T192 74 T240 74 T288 74 T336 74 T390 74 V90 H0Z" fill="#5CC2EE"/>'),
+  arches:()=>{const id=uid();return land(90,'<rect width="390" height="90" fill="#2F86DA"/><circle cx="300" cy="22" r="13" fill="#F6C343"/><path d="M40 40 q8 -16 0 -26 q-6 10 0 26Z M48 40 q10 -10 18 -6 q-10 6 -18 6Z" fill="#6B8A2A"/>'+strip(id,30,40,50,'<rect width="30" height="40" fill="#E8D5AC"/><path d="M6 40 V20 a9 9 0 0 1 18 0 V40Z" fill="#CBAE78"/><path d="M9 40 V21 a6 6 0 0 1 12 0 V40Z" fill="#9C7E4A"/><rect y="34" width="30" height="6" fill="#6B8A2A"/>'))},
+  hills:()=>land(80,'<rect width="390" height="80" fill="#F2B33D"/><circle cx="300" cy="28" r="20" fill="#FFE08A"/><path d="M0 44 C60 20 120 24 190 42 S320 32 390 22 V80 H0Z" fill="#D99A3A"/><path d="M0 58 C80 38 150 44 230 56 S340 48 390 40 V80 H0Z" fill="#8F9A3C"/><path d="M0 70 C70 58 160 62 250 70 S350 64 390 60 V80 H0Z" fill="#3F6B2A"/><g stroke="#24421A" stroke-width="1.5" opacity=".6"><path d="M10 80 L60 66M40 80 L90 66M70 80 L120 66M100 80 L150 67M130 80 L180 67M160 80 L210 68M190 80 L240 69M220 80 L270 69M250 80 L300 68M280 80 L330 66M310 80 L360 64M340 80 L390 62"/></g>'),
+  ridges:()=>land(80,'<rect width="390" height="80" fill="#9CC3E8"/><circle cx="80" cy="22" r="11" fill="#FFF3C4"/><path d="M0 36 L40 22 L80 30 L130 12 L180 28 L230 16 L280 30 L330 14 L390 26 V80 H0Z" fill="#6F98C8"/><path d="M0 48 L50 34 L100 46 L150 30 L210 44 L260 32 L320 46 L390 34 V80 H0Z" fill="#3F6FA8"/><path d="M0 60 L60 48 L120 58 L170 46 L230 58 L290 48 L350 60 L390 54 V80 H0Z" fill="#24467A"/><path d="M0 70 L70 64 L140 69 L210 62 L280 69 L340 64 L390 68 V80 H0Z" fill="#2F5D3F"/><g fill="#FFFFFF"><circle cx="300" cy="72" r="2.5"/><circle cx="306" cy="74" r="2.5"/><circle cx="60" cy="74" r="2.5"/></g>'),
+  tiles:()=>{const id=uid();return land(90,'<rect width="390" height="90" fill="#C8102E"/><circle cx="310" cy="28" r="18" fill="#FFC400"/><path d="M40 64 V36 a16 16 0 0 1 32 0 V64Z M90 64 V36 a16 16 0 0 1 32 0 V64Z M140 64 V36 a16 16 0 0 1 32 0 V64Z" fill="#8C0B20"/>'+strip(id,26,26,64,'<rect width="26" height="26" fill="#FFF3DC"/><path d="M13 2 L24 13 L13 24 L2 13Z" fill="#FFB000"/><circle cx="13" cy="13" r="4" fill="#C8102E"/><path d="M0 0 L5 0 L0 5Z M26 0 L21 0 L26 5Z M0 26 L5 26 L0 21Z M26 26 L21 26 L26 21Z" fill="#C8102E"/>'))},
+  azulejo:()=>{const id=uid();return land(90,'<rect width="390" height="90" fill="#1D5FB8"/><circle cx="70" cy="24" r="13" fill="#FFCC33"/><path d="M0 52 Q100 44 200 52 T390 50 V62 H0Z" fill="#0E3F82"/>'+strip(id,28,28,62,'<rect width="28" height="28" fill="#FFFFFF"/><circle cx="14" cy="14" r="9" fill="none" stroke="#1D5FB8" stroke-width="2"/><circle cx="14" cy="5" r="3" fill="#1D5FB8"/><circle cx="14" cy="23" r="3" fill="#1D5FB8"/><circle cx="5" cy="14" r="3" fill="#1D5FB8"/><circle cx="23" cy="14" r="3" fill="#1D5FB8"/><circle cx="14" cy="14" r="3" fill="#FFB000"/><path d="M0 0h3L0 3zM28 0h-3l3 3zM0 28h3l-3-3zM28 28h-3l3-3z" fill="#1D5FB8"/>'))},
+  cypress:()=>land(80,'<rect width="390" height="80" fill="#E0703A"/><circle cx="70" cy="26" r="16" fill="#FFC27A"/><path d="M0 46 C70 26 150 34 220 46 S340 32 390 36 V80 H0Z" fill="#E8A65A"/><path d="M0 62 C90 46 180 52 260 62 S350 54 390 52 V80 H0Z" fill="#A3A845"/>'+[[150,36],[167,38],[184,41],[300,34],[315,35]].map(p=>'<ellipse cx="'+p[0]+'" cy="'+p[1]+'" rx="5" ry="17" fill="#1F4A2A"/>').join("")+'<path d="M0 72 C100 66 200 70 390 68 V80 H0Z" fill="#5E7A2A"/>'),
+  lavender:()=>land(80,'<rect width="390" height="80" fill="#8A63D2"/><circle cx="310" cy="24" r="15" fill="#FFD36B"/><path d="M0 40 C120 30 260 34 390 30 V80 H0Z" fill="#A986E8"/>'+[44,51,58,65,72,79].map((y,i)=>'<path d="M0 '+y+' Q195 '+(y-9)+' 390 '+(y-5)+'" fill="none" stroke="'+(i%2?"#D7C6FA":"#5B37A6")+'" stroke-width="5"/>').join("")),
+  bubbles:()=>land(80,'<rect width="390" height="80" fill="#111111"/>'+[[20,62,4],[48,30,2.5],[75,50,5],[110,20,3],[140,58,4],[170,36,2.5],[205,66,4.5],[236,22,3],[262,46,4],[296,64,3],[322,28,5],[354,52,2.5],[378,18,3.5],[92,72,2.5],[250,74,2.5]].map(b=>'<circle cx="'+b[0]+'" cy="'+b[1]+'" r="'+b[2]+'" fill="none" stroke="#E8C35A" stroke-width="1.6"/>').join("")+'<rect y="76" width="390" height="4" fill="#E8C35A"/>'),
+  vines:()=>land(80,'<rect width="390" height="80" fill="#9B1B3A"/><circle cx="320" cy="24" r="13" fill="#F6C9A8"/><path d="M0 40 C90 24 200 30 390 26 V80 H0Z" fill="#C2405E"/><path d="M0 52 C120 44 260 48 390 44 V80 H0Z" fill="#F3E6D3"/><g stroke="#4E8A2E" stroke-width="3" stroke-linecap="round">'+Array.from({length:14},(_,i)=>'<path d="M'+(i*30)+' 80 L'+(i*30+24)+' 52"/>').join("")+"</g>"),
+  terraces:()=>land(80,'<rect width="390" height="80" fill="#2B4A6B"/><circle cx="70" cy="22" r="11" fill="#FFE9A8"/><path d="M0 80 L0 66 L390 10 V80Z" fill="#4C9A2A"/><g stroke="#B7E07A" stroke-width="2">'+[0,1,2,3,4,5,6].map(i=>'<path d="M'+(60+i*45)+' 80 L'+(110+i*45)+' '+(60-i*7)+'"/>').join("")+'</g><path d="M0 72 Q195 64 390 74 V80 H0Z" fill="#5AA8E0"/>'),
+  andes:()=>land(80,'<rect width="390" height="80" fill="#4B2A86"/><path d="M0 56 L50 28 L80 42 L130 8 L175 36 L220 18 L270 40 L320 12 L390 44 V80 H0Z" fill="#7A62B8"/><path d="M116 16 L130 8 L144 17 L135 15 L130 20Z M308 19 L320 12 L332 20 L325 18 L320 23Z M211 23 L220 18 L229 24Z" fill="#FFFFFF"/><path d="M0 64 C100 56 260 60 390 58 V80 H0Z" fill="#A9784A"/><g stroke="#4E8A2E" stroke-width="2.5">'+Array.from({length:13},(_,i)=>'<path d="M'+(i*32)+' 80 L'+(i*32+20)+' 64"/>').join("")+"</g>")
+};
+const T=(o)=>Object.assign({accentInk:"#FFFFFF",hink:"#FFFFFF"},o);
+const THEMES=[
+  T({key:"sardinia",label:"Sardinia",r:["sardinia","sardegna","gallura","sulcis","cannonau","mandrolisai","jerzu","alghero","oliena"],c:[],hbg:"#0E9AAA",bg:"#EAF6F5",accent:"#0B7480",pairBg:"#C8352B",pairInk:"#FFFFFF",star:"#C8352B",orn:"textile"}),
+  T({key:"corsica",label:"Corsica",r:["corsica","corse","ajaccio","patrimonio","calvi","figari","porto-vecchio","sartene"],c:[],hbg:"#FF6F4D",bg:"#FFF1EC",accent:"#0A4F8F",pairBg:"#0A4F8F",pairInk:"#FFFFFF",star:"#FF6F4D",orn:"waves"}),
+  T({key:"israel",label:"Israel",r:["galilee","golan","judean","judea","negev","samson","shomron","carmel","jerusalem"],c:["israel"],hbg:"#2F86DA",bg:"#F5EEDF",accent:"#1F6BB8",pairBg:"#6B8A2A",pairInk:"#FFFFFF",star:"#B8862B",orn:"arches"}),
+  T({key:"virginia",label:"Virginia",r:["virginia","monticello","shenandoah","blue ridge","middleburg","charlottesville"],c:[],hbg:"#3F6FA8",bg:"#EAF1F8",accent:"#24467A",pairBg:"#A3262A",pairInk:"#FFFFFF",star:"#A3262A",orn:"ridges"}),
+  T({key:"napa",label:"Napa & California",r:["napa","sonoma","california","paso robles","santa barbara","central coast","mendocino","russian river","santa cruz","lodi"],c:["usa","united states","us","america"],hbg:"#E89A1E",bg:"#FDF3E1",accent:"#7A4A12",pairBg:"#3F6B2A",pairInk:"#FFFFFF",star:"#D98A12",orn:"hills"}),
+  T({key:"provence",label:"Provence",r:["provence","bandol","cassis","bellet","palette","luberon"],c:[],hbg:"#8A63D2",bg:"#F3EEFC",accent:"#5B37A6",pairBg:"#5B37A6",pairInk:"#FFFFFF",star:"#8A63D2",orn:"lavender"}),
+  T({key:"champagne",label:"Champagne",r:["champagne","reims","epernay","cote des blancs","montagne de reims","franciacorta","cremant"],c:[],hbg:"#111111",hink:"#E8C35A",bg:"#F8F3E3",accent:"#111111",accentInk:"#E8C35A",pairBg:"#111111",pairInk:"#E8C35A",star:"#C9A23A",orn:"bubbles"}),
+  T({key:"spain",label:"Spain",r:["rioja","ribera","priorat","rias baixas","jerez","sherry","rueda","toro","jumilla","navarra","penedes","bierzo","montsant","cava","la mancha"],c:["spain","espana"],hbg:"#C8102E",bg:"#FFF3E6",accent:"#C8102E",pairBg:"#FFC400",pairInk:"#3A1A00",star:"#C8102E",orn:"tiles"}),
+  T({key:"portugal",label:"Portugal",r:["douro","dao","alentejo","vinho verde","madeira","porto","port","bairrada","lisboa","setubal"],c:["portugal"],hbg:"#1D5FB8",bg:"#EEF3FB",accent:"#1D5FB8",pairBg:"#FFCC33",pairInk:"#2A2000",star:"#1D5FB8",orn:"azulejo"}),
+  T({key:"italy",label:"Italy",r:["tuscany","toscana","chianti","montalcino","montepulciano","bolgheri","piedmont","piemonte","barolo","barbaresco","veneto","valpolicella","amarone","puglia","campania","friuli","alto adige","abruzzo","umbria","marche","lombardy","prosecco"],c:["italy","italia"],hbg:"#E0703A",bg:"#FDF0E6",accent:"#1F4A2A",pairBg:"#1F4A2A",pairInk:"#FFFFFF",star:"#E0703A",orn:"cypress"}),
+  T({key:"germany",label:"Germany & Austria",r:["mosel","rheingau","pfalz","nahe","rheinhessen","franken","baden","wachau","kamptal","kremstal","burgenland"],c:["germany","deutschland","austria","osterreich"],hbg:"#4C9A2A",bg:"#EEF6E8",accent:"#2B4A6B",pairBg:"#2B4A6B",pairInk:"#FFFFFF",star:"#4C9A2A",orn:"terraces"}),
+  T({key:"andes",label:"Argentina & Chile",r:["mendoza","uco","lujan de cuyo","salta","cafayate","patagonia","maipo","colchagua","casablanca","aconcagua","maule","itata"],c:["argentina","chile"],hbg:"#6A3FB5",bg:"#F2EDFA",accent:"#4B2A86",pairBg:"#A9784A",pairInk:"#FFFFFF",star:"#6A3FB5",orn:"andes"}),
+  T({key:"france",label:"France",r:["bordeaux","burgundy","bourgogne","loire","rhone","alsace","beaujolais","languedoc","roussillon","jura","chablis","sancerre","medoc","saint-emilion","pomerol","chateauneuf"],c:["france"],hbg:"#9B1B3A",bg:"#FBEEF0",accent:"#9B1B3A",pairBg:"#4E8A2E",pairInk:"#FFFFFF",star:"#9B1B3A",orn:"vines"}),
+  T({key:"aegean",label:"Greece",r:["santorini","crete","naoussa","nemea","macedonia","peloponnese","cyclades","paros","rhodes","cyprus"],c:["greece","cyprus"],hbg:"#1747A6",bg:"#EAF0FC",accent:"#1747A6",pairBg:"#1747A6",pairInk:"#FFFFFF",star:"#1747A6",orn:"meander"})
+];
+Object.assign(ORN,{
+  outback:()=>land(80,'<rect width="390" height="80" fill="#F2A541"/><circle cx="300" cy="26" r="16" fill="#FFE3A3"/><path d="M0 52 C90 40 200 46 390 40 V80 H0Z" fill="#C1440E"/><path d="M0 64 C120 56 260 60 390 58 V80 H0Z" fill="#8E2F0B"/>'+[[70,36,16],[96,40,12],[220,34,14],[340,38,12]].map(t=>'<path d="M'+t[0]+' 58 V'+(t[1]+6)+'" stroke="#5A3A22" stroke-width="3"/><ellipse cx="'+t[0]+'" cy="'+t[1]+'" rx="'+t[2]+'" ry="'+(t[2]*.7)+'" fill="#5E7F3E"/>').join("")+'<g stroke="#5E7F3E" stroke-width="2">'+Array.from({length:13},(_,i)=>'<path d="M'+(i*32)+' 80 L'+(i*32+18)+' 66"/>').join("")+"</g>"),
+  kiwi:()=>land(80,'<rect width="390" height="80" fill="#7CC4E8"/><path d="M0 40 L60 14 L95 30 L150 6 L200 28 L260 12 L320 30 L390 18 V60 H0Z" fill="#5B7A99"/><path d="M140 12 L150 6 L160 13 L150 12Z M252 17 L260 12 L268 18Z" fill="#FFFFFF"/><path d="M0 52 C80 36 160 44 230 50 S340 40 390 44 V80 H0Z" fill="#3E9E5F"/><path d="M0 66 C100 58 220 62 390 60 V80 H0Z" fill="#2E7D4F"/><g stroke="#1E5E38" stroke-width="2">'+Array.from({length:13},(_,i)=>'<path d="M'+(i*32)+' 80 L'+(i*32+18)+' 64"/>').join("")+"</g>"),
+  tablemtn:()=>land(80,'<rect width="390" height="80" fill="#F7B267"/><circle cx="70" cy="22" r="13" fill="#FFE0A8"/><path d="M90 50 L120 22 L270 20 L300 50Z" fill="#6B4F3A"/><path d="M120 22 L270 20" stroke="#FFFFFF" stroke-width="3" opacity=".7"/><path d="M0 54 C100 46 260 50 390 46 V80 H0Z" fill="#4C8A3A"/><g fill="#E0566B">'+[30,58,340,366].map(x=>'<circle cx="'+x+'" cy="70" r="6"/>').join("")+'</g><g stroke="#2E5E26" stroke-width="2">'+Array.from({length:9},(_,i)=>'<path d="M'+(80+i*28)+' 80 L'+(96+i*28)+' 62"/>').join("")+"</g>"),
+  etna:()=>land(80,'<rect width="390" height="80" fill="#F6D365"/><path d="M110 70 L190 18 L210 18 L290 70Z" fill="#3A2E2A"/><path d="M190 18 L200 30 L210 18" fill="#E8501E"/><path d="M196 16 C186 4 206 -2 214 6 C226 0 238 8 230 14" fill="none" stroke="#FFFFFF" stroke-width="4" opacity=".8"/><path d="M0 62 C100 54 280 58 390 56 V80 H0Z" fill="#4E7A2E"/><g fill="#FFD23F" stroke="#C99A00">'+[[40,58],[64,64],[330,60],[354,66]].map(p=>'<ellipse cx="'+p[0]+'" cy="'+p[1]+'" rx="8" ry="6"/>').join("")+"</g>"),
+  qvevri:()=>land(80,'<rect width="390" height="80" fill="#8CB7D6"/><path d="M0 40 L50 16 L90 30 L140 8 L190 28 L240 12 L300 30 L390 14 V56 H0Z" fill="#6A7F93"/><path d="M130 14 L140 8 L150 15Z M232 17 L240 12 L248 18Z M382 18 L390 14 L390 20Z" fill="#FFFFFF"/><path d="M0 56 C120 48 260 52 390 50 V80 H0Z" fill="#6E8B3D"/><path d="M60 76 C40 70 42 46 56 40 L76 40 C90 46 92 70 72 76Z" fill="#B5462B"/><path d="M56 40 h20" stroke="#7E2E1A" stroke-width="3"/><path d="M300 76 C284 71 286 52 297 47 L313 47 C324 52 326 71 310 76Z" fill="#C2582F"/>'),
+  tulips:()=>{const id=uid();return land(80,'<rect width="390" height="80" fill="#A61E2E"/><path d="M0 46 C100 30 260 36 390 30 V54 H0Z" fill="#C9A227"/>'+strip(id,30,26,54,'<rect width="30" height="26" fill="#FFF4E0"/><path d="M15 20 V12" stroke="#2E6B3A" stroke-width="2"/><path d="M9 6 L12 10 L15 4 L18 10 L21 6 L20 13 H10Z" fill="#A61E2E"/><path d="M15 16 q-6 -2 -8 2 M15 16 q6 -2 8 2" stroke="#2E6B3A" stroke-width="1.6" fill="none"/>'))},
+  cedar:()=>land(80,'<rect width="390" height="80" fill="#9FD0E8"/><path d="M0 44 L70 20 L130 34 L200 14 L270 32 L330 18 L390 30 V64 H0Z" fill="#B9A58A"/><path d="M190 18 L200 14 L212 19Z" fill="#FFFFFF"/><path d="M0 60 C120 52 260 56 390 54 V80 H0Z" fill="#7A9A3E"/><g fill="#1F6A3F"><path d="M300 68 L330 62 L360 68Z"/><path d="M296 58 L330 50 L364 58Z"/><path d="M304 48 L330 40 L356 48Z"/><path d="M314 38 L330 30 L346 38Z"/></g><path d="M330 68 V76" stroke="#5A3A22" stroke-width="4"/>'),
+  fingerlakes:()=>land(80,'<rect width="390" height="80" fill="#BFD9F2"/><path d="M0 38 C90 26 200 32 390 28 V80 H0Z" fill="#7A9B4E"/><path d="M60 80 C70 60 74 46 70 36 C80 46 84 62 84 80Z M170 80 C176 58 182 44 178 34 C190 44 194 62 192 80Z M280 80 C284 62 292 48 288 38 C300 48 302 64 300 80Z" fill="#2F6FB5"/>'+[[30,40],[120,36],[136,40],[236,34],[250,38],[340,36],[360,40]].map((p,i)=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="9" fill="'+["#E0702A","#C8452B","#E8A23A","#D35A2A","#B8402A","#E8A23A","#C8452B"][i]+'"/>').join("")),
+  evergreen:()=>land(80,'<rect width="390" height="80" fill="#A9CBE0"/><path d="M200 60 L250 10 L300 60Z" fill="#8A9BAE"/><path d="M236 24 L250 10 L264 24 L256 22 L250 28 L244 22Z" fill="#FFFFFF"/><path d="M0 58 C120 50 260 54 390 52 V80 H0Z" fill="#4E7A3A"/>'+[20,46,72,330,356,382,120,146].map((x,i)=>'<path d="M'+(x-11)+' '+(70-(i%3)*4)+' L'+x+' '+(34-(i%3)*4)+' L'+(x+11)+' '+(70-(i%3)*4)+'Z" fill="#234D38"/>').join("")),
+  maple:()=>{const id=uid();return land(80,'<rect width="390" height="80" fill="#9AC6E0"/><path d="M0 40 L60 22 L120 34 L190 14 L250 32 L320 18 L390 30 V54 H0Z" fill="#5E7F94"/><path d="M0 44 C120 38 260 42 390 40 V54 H0Z" fill="#3C88B8"/>'+strip(id,26,26,54,'<rect width="26" height="26" fill="#FFFFFF"/><path d="M13 3 L15 8 L19 6 L18 11 L22 11 L18 15 L19 17 L14 16 L14 22 L12 22 L12 16 L7 17 L8 15 L4 11 L8 11 L7 6 L11 8Z" fill="#B22234"/>'))},
+  dalmatia:()=>{const id=uid();return land(80,'<rect width="390" height="80" fill="#1A8FC0"/><circle cx="330" cy="20" r="12" fill="#FFE7A3"/><path d="M0 40 C100 34 220 38 390 34 V58 H0Z" fill="#0E6A95"/><g fill="#F3EBDD">'+[[30,26,34],[66,30,30],[100,24,36]].map(b=>'<rect x="'+b[0]+'" y="'+b[1]+'" width="'+b[2]+'" height="'+(44-b[1])+'"/>').join("")+'</g><g fill="#C8452B">'+[[30,26,34],[66,30,30],[100,24,36]].map(b=>'<path d="M'+(b[0]-2)+' '+b[1]+' L'+(b[0]+b[2]/2)+' '+(b[1]-10)+' L'+(b[0]+b[2]+2)+' '+b[1]+'Z"/>').join("")+"</g>"+strip(id,24,24,58,'<rect width="24" height="24" fill="#FFFFFF"/><rect width="12" height="12" fill="#D2232A"/><rect x="12" y="12" width="12" height="12" fill="#D2232A"/>'))},
+  sunofmay:()=>land(80,'<rect width="390" height="80" fill="#FFFFFF"/>'+[0,1,2,3].map(i=>'<rect y="'+(8+i*18)+'" width="390" height="9" fill="#4A90C8"/>').join("")+'<rect width="110" height="80" fill="#FFFFFF"/><g fill="#F2B705"><circle cx="55" cy="40" r="14"/>'+Array.from({length:16},(_,i)=>{const a=i*Math.PI/8;return '<path d="M'+(55+Math.cos(a)*16)+' '+(40+Math.sin(a)*16)+' L'+(55+Math.cos(a+.12)*30)+' '+(40+Math.sin(a+.12)*30)+' L'+(55+Math.cos(a+.24)*16)+' '+(40+Math.sin(a+.24)*16)+'Z"/>'}).join("")+"</g>"),
+  picado:()=>land(80,'<rect width="390" height="80" fill="#F2C88B"/><path d="M0 60 C120 52 260 56 390 54 V80 H0Z" fill="#C98B4A"/><g fill="#3E7A3A"><rect x="300" y="34" width="10" height="34" rx="5"/><rect x="290" y="44" width="8" height="14" rx="4"/><rect x="312" y="40" width="8" height="16" rx="4"/><rect x="60" y="42" width="8" height="26" rx="4"/></g><path d="M0 4 Q195 22 390 4" fill="none" stroke="#5A3A22" stroke-width="1.5"/>'+Array.from({length:12},(_,i)=>{const x=i*33+4,y=5+Math.sin((i+.5)/12*Math.PI)*16;return '<path d="M'+x+' '+y+' h26 v16 l-4 4 l-5 -4 l-4 4 l-4 -4 l-5 4 l-4 -4Z" fill="'+["#D2367A","#F2B705","#2FA4A9","#E8501E","#7A3FB5","#3E9E5F"][i%6]+'"/>'}).join("")),
+  cliffs:()=>land(80,'<rect width="390" height="80" fill="#B8D4E8"/><path d="M0 34 C120 26 260 30 390 26 V60 H0Z" fill="#5E9E4E"/><path d="M0 60 L0 40 C60 36 120 40 180 38 L200 60Z" fill="#F4F1EA"/><path d="M200 60 L180 38 L190 38 L215 60Z" fill="#D9D3C4"/><path d="M0 60 H390 V80 H0Z" fill="#3D6E9C"/><g stroke="#3F7A34" stroke-width="2">'+Array.from({length:7},(_,i)=>'<path d="M'+(230+i*22)+' 58 L'+(244+i*22)+' 34"/>').join("")+"</g>")
+});
+const NEW_THEMES=[
+  T({key:"sicily",label:"Sicily",r:["sicily","sicilia","etna","marsala","vittoria","noto","pantelleria","nero d'avola"],c:[],hbg:"#E8A317",hink:"#2A1A00",bg:"#FDF5E0",accent:"#3A2E2A",pairBg:"#E8501E",pairInk:"#FFFFFF",star:"#D84A1B",orn:"etna"}),
+  T({key:"australia",label:"Australia",r:["barossa","mclaren vale","margaret river","hunter valley","yarra","coonawarra","clare valley","eden valley","adelaide hills","tasmania","south australia"],c:["australia"],hbg:"#C1440E",bg:"#FCEEE3",accent:"#8E2F0B",pairBg:"#5E7F3E",pairInk:"#FFFFFF",star:"#C1440E",orn:"outback"}),
+  T({key:"newzealand",label:"New Zealand",r:["marlborough","central otago","hawke's bay","hawkes bay","martinborough","nelson","waipara","gisborne"],c:["new zealand"],hbg:"#2E8B57",bg:"#EAF6EE",accent:"#1E5E38",pairBg:"#2F6FB5",pairInk:"#FFFFFF",star:"#2E8B57",orn:"kiwi"}),
+  T({key:"southafrica",label:"South Africa",r:["stellenbosch","swartland","franschhoek","paarl","constantia","walker bay","hemel-en-aarde","western cape","elgin"],c:["south africa"],hbg:"#D9485F",bg:"#FCEEF0",accent:"#6B4F3A",pairBg:"#4C8A3A",pairInk:"#FFFFFF",star:"#D9485F",orn:"tablemtn"}),
+  T({key:"georgia",label:"Georgia",r:["kakheti","kartli","imereti","racha","tsinandali","mukuzani","kindzmarauli","saperavi","rkatsiteli"],c:["georgia","sakartvelo"],hbg:"#B5462B",bg:"#FBEFEA",accent:"#7E2E1A",pairBg:"#6E8B3D",pairInk:"#FFFFFF",star:"#B5462B",orn:"qvevri"}),
+  T({key:"hungary",label:"Hungary",r:["tokaj","tokaji","eger","villany","balaton","szekszard"],c:["hungary","magyarorszag"],hbg:"#A61E2E",bg:"#FCF1E8",accent:"#A61E2E",pairBg:"#C9A227",pairInk:"#2A1A00",star:"#C9A227",orn:"tulips"}),
+  T({key:"lebanon",label:"Lebanon",r:["bekaa","batroun","mount lebanon"],c:["lebanon"],hbg:"#1F7A4A",bg:"#EDF6EF",accent:"#1F6A3F",pairBg:"#B9A58A",pairInk:"#2A1A00",star:"#1F7A4A",orn:"cedar"}),
+  T({key:"newyork",label:"New York",r:["finger lakes","long island","north fork","hudson valley","seneca","keuka","cayuga","new york"],c:[],hbg:"#2F6FB5",bg:"#EEF4FB",accent:"#2F6FB5",pairBg:"#E0702A",pairInk:"#FFFFFF",star:"#E0702A",orn:"fingerlakes"}),
+  T({key:"pnw",label:"Oregon & Washington",r:["oregon","willamette","dundee hills","eola-amity","chehalem","rogue","umpqua","washington","columbia valley","walla walla","yakima","red mountain","horse heaven"],c:[],hbg:"#234D38",bg:"#EDF3EE",accent:"#234D38",pairBg:"#7A5A9E",pairInk:"#FFFFFF",star:"#3E7A52",orn:"evergreen"}),
+  T({key:"canada",label:"Canada",r:["niagara","okanagan","prince edward county","ontario","british columbia","nova scotia"],c:["canada"],hbg:"#B22234",bg:"#FCEEF0",accent:"#B22234",pairBg:"#3C88B8",pairInk:"#FFFFFF",star:"#B22234",orn:"maple"}),
+  T({key:"adriatic",label:"Croatia & Slovenia",r:["dalmatia","dalmacija","istria","istra","peljesac","hvar","korcula","brda","vipava","goriska","plavac"],c:["croatia","hrvatska","slovenia","slovenija"],hbg:"#1A8FC0",bg:"#EAF5FA",accent:"#D2232A",pairBg:"#D2232A",pairInk:"#FFFFFF",star:"#1A8FC0",orn:"dalmatia"}),
+  T({key:"uruguay",label:"Uruguay",r:["canelones","maldonado","garzon","colonia","tannat"],c:["uruguay"],hbg:"#4A90C8",bg:"#EEF5FB",accent:"#2F6FA3",pairBg:"#F2B705",pairInk:"#2A1A00",star:"#4A90C8",orn:"sunofmay"}),
+  T({key:"mexico",label:"Mexico",r:["valle de guadalupe","baja","guadalupe","ensenada","parras","queretaro"],c:["mexico"],hbg:"#D2367A",bg:"#FDEFF5",accent:"#2FA4A9",pairBg:"#2FA4A9",pairInk:"#FFFFFF",star:"#D2367A",orn:"picado"}),
+  T({key:"england",label:"England",r:["sussex","kent","hampshire","surrey","cornwall","england"],c:["england","united kingdom","uk","wales"],hbg:"#2E6B3F",bg:"#EEF4EF",accent:"#3D6E9C",pairBg:"#3D6E9C",pairInk:"#FFFFFF",star:"#2E6B3F",orn:"cliffs"})
+];
+THEMES.unshift(...NEW_THEMES);
+
+const THEME_BY_KEY=Object.fromEntries(THEMES.map(t=>[t.key,t]));
+const DEFAULT_THEME=THEME_BY_KEY.aegean;
+const normTxt=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+function hasWord(text,m){const i=text.indexOf(m);if(i<0)return false;const a=text[i-1],b=text[i+m.length];return !(a&&/[a-z]/.test(a))&&!(b&&/[a-z]/.test(b))}
+function autoTheme(w){
+  const reg=normTxt(w.region+" "+(w.name||"")),c=normTxt(w.country);
+  for(const t of THEMES)if(t.r.some(m=>hasWord(normTxt(w.region),m)))return t;
+  for(const t of THEMES)if(t.c.some(m=>hasWord(c,m)))return t;
+  for(const t of THEMES)if(t.r.some(m=>hasWord(reg,m)))return t;
+  if(w.type==="green")return THEME_BY_KEY.portugal;
+  return null;
+}
+function themeFor(w){if(w&&w.theme&&THEME_BY_KEY[w.theme])return THEME_BY_KEY[w.theme];return autoTheme(w||{})||DEFAULT_THEME}
+const loadedFonts=new Set();
+function loadFont(t){if(!t.font||loadedFonts.has(t.font))return;loadedFonts.add(t.font);const l=document.createElement("link");l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?"+t.font+"&display=swap";document.head.appendChild(l)}
+function themeVars(t){return ["bg","hbg","hink","accent","accentInk","pairBg","pairInk","star"].map(k=>"--th-"+k+":"+t[k]).join(";")}
+
+const state={wines:[],loaded:false,view:"journal",type:"all",q:"",sort:"recent",region:null,pairing:null};
+const store={mode:"local",col:null,unsub:null};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- storage ---------- */
+function readLocal(){try{const r=localStorage.getItem(LS_KEY);return r?JSON.parse(r):[]}catch(e){return []}}
+function writeLocal(){try{localStorage.setItem(LS_KEY,JSON.stringify(state.wines))}catch(e){}}
+function setSync(t){$("#sync").textContent=t+"  ›"}
+
+state.wines=readLocal();state.loaded=true;
+setSync("Saved on this device");
+render();
+
+function goLocal(){if(store.unsub){try{store.unsub()}catch(e){}store.unsub=null}store.mode="local";setSync("Saved on this device")}
+(async function connect(){
+  try{
+    if(!window.claude||!window.claude.use)return;
+    const [db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
+    if(!db||!user)return;
+    let canWrite=null;try{canWrite=user.can?await user.can("data.write"):null}catch(e){}
+    if(canWrite===false)return; // visitors who can't save to their account keep the journal on this device
+    const uid=await user.id();
+    if(!uid)return;
+    store.col=db.doc("data/users/"+uid+"/journal").collection("wines");
+    store.mode="db";
+    setSync("Syncing…");
+    const timer=setTimeout(()=>setSync("Can't reach your account yet"),10000);
+    let first=true;
+    store.unsub=store.col.onSnapshot(snap=>{
+      if(store.mode!=="db")return;
+      const list=snap.docs.filter(d=>d.exists).map(d=>Object.assign({},d.data(),{id:d.id}));
+      if(!snap.metadata.fromCache){
+        clearTimeout(timer);setSync("Synced to your account");
+        if(first){first=false;
+          const have=new Set(list.map(w=>w.id));
+          const toMove=readLocal().filter(w=>!have.has(w.id)&&!w.example);
+          if(toMove.length){
+            list.push(...toMove);
+            (async()=>{for(const w of toMove){try{await store.col.doc(w.id).set(stripId(w))}catch(e){if(e&&e.code==="invalid_argument"){goLocal();return}}}})();
+          }
+        }
+      }else if(!list.length&&readLocal().length){return}
+      state.wines=list;writeLocal();
+      render();
+    },err=>{clearTimeout(timer);goLocal()});
+  }catch(e){goLocal()}
+})();
+
+function stripId(w){const o=Object.assign({},w);delete o.id;delete o.example;return o}
+function newId(){return "w"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+
+async function saveWine(w){
+  const i=state.wines.findIndex(x=>x.id===w.id);
+  if(i>=0)state.wines[i]=w;else state.wines.unshift(w);
+  writeLocal();render();
+  if(store.mode==="db"){
+    try{await store.col.doc(w.id).set(stripId(w))}
+    catch(e){if(e&&e.code==="invalid_argument"){goLocal();toast("Saved on this device")}else if(e&&e.code==="quota_exceeded")toast("Your journal is full. Remove a few photos or wines.");else toast("Saved on this device. Account sync failed.")}
+  }
+}
+async function deleteWine(id){
+  state.wines=state.wines.filter(w=>w.id!==id);writeLocal();render();
+  if(store.mode==="db"){try{await store.col.doc(id).delete()}catch(e){if(e&&e.code==="invalid_argument")goLocal()}}
+}
+
+/* ---------- helpers ---------- */
+function stars(r){r=Number(r)||0;let s="";for(let i=1;i<=5;i++){s+=r>=i?"★":(r>=i-.5?'<span class="halfstar">★</span>':'<span class="off">★</span>')}return '<span class="stars" aria-label="'+r+' of 5 stars">'+s+"</span>"}
+function norm(c){const s=Number(c.score);if(!s)return 0;return c.scale==20?s*5:c.scale==5?s*20:s}
+function bestCritic(w){const c=(w.critics||[]).filter(c=>Number(c.score));if(!c.length)return null;return c.slice().sort((a,b)=>norm(b)-norm(a))[0]}
+function scoreBadge(c){return '<span class="score">'+esc(c.score)+'<small>/'+esc(c.scale||100)+'</small> · '+esc(shortCritic(c.by))+"</span>"}
+function shortCritic(n){return ({"Wine Spectator":"WS","Wine Advocate (Parker)":"RP","James Suckling":"JS","Decanter":"Decanter","Wine Enthusiast":"WE","Vinous":"Vinous","Jancis Robinson":"JR","Jeb Dunnuck":"JD","Wine & Spirits":"W&S"})[n]||n||"Critic"}
+function thumb(w,cls){if(w.photo)return '<img class="'+(cls||"thumb")+'" src="'+esc(w.photo)+'" alt="">';const t=themeFor(w);return '<div class="'+(cls||"thumb")+'" aria-hidden="true" title="'+esc(t.label)+'" style="background:'+t.hbg+'">'+bottleSvg(w.type)+"</div>"}
+function bottleSvg(t){const c=getComputedStyle(document.documentElement).getPropertyValue("--t-"+(t||"red")).trim()||"#7B1E33";return '<svg width="26" height="60" viewBox="0 0 26 60"><path d="M10 2h6v14c0 3 6 5 6 12v28a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V28c0-7 6-9 6-12z" fill="'+c+'" stroke="#0D2E73" stroke-opacity=".25"/><rect x="6" y="32" width="14" height="12" rx="1.5" fill="#fff" opacity=".9"/></svg>'}
+function avg(a){return a.length?a.reduce((s,x)=>s+x,0)/a.length:0}
+function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),2400)}
+function source(){return state.wines.length?state.wines:EXAMPLES}
+function isExampleMode(){return !state.wines.length}
+
+/* ---------- ask the sommelier (Claude) ---------- */
+var STORES=["Trader Joe's","Whole Foods","Total Wine","Costco","Any wine shop"];
+var ask={meal:"",region:"",type:"any",stores:new Set(["Trader Joe's","Any wine shop"]),budget:"Under $20",skipMass:true,extra:"",status:"idle",result:null,error:"",ctl:null};
+var sampleFn;
+(async function(){try{sampleFn=(window.claude&&window.claude.use)?await window.claude.use("sample"):null}catch(e){sampleFn=null}if(state.view==="pairings")render()})();
+var ASK_EXAMPLES=[
+  {label:"Lentil soup · Spain",meal:"Lentil soup",region:"Spain",type:"any",stores:["Trader Joe's","Any wine shop"],budget:"Under $20"},
+  {label:"Brunch bubbles",meal:"Sunday brunch: eggs, smoked salmon, fruit",region:"",type:"sparkling",stores:["Trader Joe's","Whole Foods","Any wine shop"],budget:"Under $20"},
+  {label:"BBQ · Virginia",meal:"Smoky BBQ ribs",region:"Virginia",type:"red",stores:["Total Wine","Any wine shop"],budget:"$20–35"},
+  {label:"Takeout curry · no alcohol",meal:"Spicy chicken curry takeout",region:"",type:"na",stores:["Whole Foods","Trader Joe's","Any wine shop"],budget:"Under $20"}
+];
+function renderAsk(){
+  if(!window.claude)return "";
+  let h='<section class="ask" aria-labelledby="askTitle"><div class="ask-kicker">Ask the sommelier</div><h3 id="askTitle">Find a bottle</h3>';
+  if(sampleFn===null){return h+'<p class="meta">This works when you open Cellar Book inside Claude.</p></section>'}
+  h+='<div class="ask-ex" role="group" aria-label="Example questions">'+ASK_EXAMPLES.slice(0,3).map((e,i)=>'<button type="button" class="pchip" data-askex="'+i+'">'+esc(e.label)+"</button>").join("")+"</div>";
+  h+='<form id="askForm" novalidate><div class="f"><label for="askMeal">Your meal</label><input id="askMeal" placeholder="e.g. Lentil soup, brunch, BBQ ribs" value="'+esc(ask.meal)+'"></div>';
+  h+='<div class="grid2"><div class="f"><label for="askRegion">Region</label><input id="askRegion" list="dlAskRegion" placeholder="Anywhere" value="'+esc(ask.region)+'"><datalist id="dlAskRegion">'+THEMES.map(t=>'<option value="'+esc(t.label)+'">').join("")+'</datalist></div>';
+  h+='<div class="f"><label for="askType">Style</label><select id="askType"><option value="any">Any style</option>'+TYPES.map(t=>'<option value="'+t.k+'"'+(ask.type===t.k?" selected":"")+">"+t.l+"</option>").join("")+"</select></div></div>";
+  h+='<div class="f"><span class="flabel">Stores</span><div class="pchips" id="askStores">'+STORES.map(st=>'<button type="button" class="pchip" data-store="'+esc(st)+'" aria-pressed="'+ask.stores.has(st)+'">'+esc(st)+"</button>").join("")+"</div></div>";
+  h+='<details class="more"><summary>More options</summary><div class="f"><label for="askBudget">Budget per bottle</label><select id="askBudget">'+["Under $12","Under $20","$20–35","$35–60","Any"].map(b=>'<option'+(ask.budget===b?" selected":"")+">"+b+"</option>").join("")+'</select></div><div class="f"><label for="askExtra">Anything else?</label><input id="askExtra" placeholder="e.g. not too oaky" value="'+esc(ask.extra)+'"></div><label class="check"><input type="checkbox" id="askSkip"'+(ask.skipMass?" checked":"")+'> Skip mass-market brands like Barefoot</label></details>';
+  h+='<div class="actions" style="justify-content:flex-start">'+(ask.status==="loading"?'<button type="button" class="btn ghost" id="askStop">Stop</button><span class="meta" role="status">Thinking about your meal…</span>':'<button type="submit" class="btn primary">Find bottles</button>')+"</div></form>";
+  if(ask.error)h+='<p class="err" role="alert">'+esc(ask.error)+"</p>";
+  if(ask.result){
+    const r=ask.result;
+    h+='<div class="ask-result">'+(r.intro?'<p class="ask-intro">'+esc(r.intro)+"</p>":"");
+    (r.picks||[]).forEach((p,i)=>{const t=themeFor({region:p.region,country:p.country});
+      h+='<article class="pick"><div class="pick-band" style="background:'+t.hbg+'"></div><div class="pick-body"><span class="rtag" style="background:'+t.hbg+';color:'+t.hink+'">'+esc(t.label)+'</span><h4>'+esc(p.name||"")+'</h4><div class="meta">'+esc([p.producer,[p.region,p.country].filter(Boolean).join(", ")].filter(Boolean).join(" · "))+'</div><div class="row">'+(p.type&&TYPE_LABEL[p.type]?'<span class="dot '+esc(p.type)+'"></span><b style="font-size:13px">'+esc(TYPE_LABEL[p.type])+"</b>":"")+(p.grape?'<span class="meta">· '+esc(p.grape)+"</span>":"")+(p.price?'<span class="score">'+esc(p.price)+"</span>":"")+'</div>'+((p.where||[]).length?'<div class="row">'+p.where.map(x=>'<span class="pair">'+esc(x)+"</span>").join("")+"</div>":"")+(p.why?'<p class="pick-why">'+esc(p.why)+"</p>":"")+(p.lookFor?'<p class="meta">'+esc(p.lookFor)+"</p>":"")+'<button type="button" class="btn ghost" data-addpick="'+i+'">Add to my book</button></div></article>'});
+    if(r.tip)h+='<p class="meta"><b>Serving tip:</b> '+esc(r.tip)+"</p>";
+    h+='<p class="meta">Shelves vary by state and store, so treat these as a shopping list, not a guarantee.</p></div>';
+  }
+  return h+"</section>";
+}
+function readAskForm(){const g=id=>{const e=$("#"+id);return e?e.value:""};ask.meal=g("askMeal").trim();ask.region=g("askRegion").trim();ask.type=g("askType")||"any";ask.budget=g("askBudget");ask.extra=g("askExtra").trim();const c=$("#askSkip");ask.skipMass=c?c.checked:true}
+function bindAsk(){
+  const f=$("#askForm");if(!f)return;
+  ["askMeal","askRegion","askType","askBudget","askExtra","askSkip"].forEach(id=>{const e=$("#"+id);e&&e.addEventListener("change",readAskForm);e&&e.addEventListener("input",readAskForm)});
+  $("#askStores").onclick=e=>{const b=e.target.closest("[data-store]");if(!b)return;const st=b.dataset.store;ask.stores.has(st)?ask.stores.delete(st):ask.stores.add(st);b.setAttribute("aria-pressed",ask.stores.has(st))};
+  document.querySelectorAll("[data-askex]").forEach(b=>b.onclick=()=>{const e=ASK_EXAMPLES[Number(b.dataset.askex)];Object.assign(ask,{meal:e.meal,region:e.region,type:e.type,budget:e.budget,stores:new Set(e.stores)});render();runAsk()});
+  f.onsubmit=e=>{e.preventDefault();readAskForm();runAsk()};
+  const st=$("#askStop");st&&(st.onclick=()=>ask.ctl&&ask.ctl.abort());
+  document.querySelectorAll("[data-addpick]").forEach(b=>b.onclick=()=>{const p=ask.result.picks[Number(b.dataset.addpick)];openForm(null,{name:p.name||"",producer:p.producer||"",region:p.region||"",country:p.country||"",grape:p.grape||"",type:TYPE_LABEL[p.type]?p.type:"red",price:String(p.price||"").replace(/[^0-9.–-]/g,"").split(/[–-]/)[0]||"",pairings:ask.meal?[ask.meal.charAt(0).toUpperCase()+ask.meal.slice(1)]:[],notes:"Suggested for "+(ask.meal||"a meal")+". "+(p.why||""),tasted:""})});
+}
+async function runAsk(){
+  if(!sampleFn||ask.status==="loading")return;
+  if(!ask.meal){ask.error="Tell me what you're eating first.";render();const m=$("#askMeal");m&&m.focus();return}
+  const mine=state.wines.slice(0,25).map(w=>"- "+[w.name,w.region,w.country,TYPE_LABEL[w.type],w.myRating?w.myRating+"/5":""].filter(Boolean).join(", ")).join("\n");
+  const typeTxt=ask.type==="any"?"any style":ask.type==="na"?"NON-ALCOHOLIC wine only (dealcoholized or alcohol-free wines)":TYPE_LABEL[ask.type]+" wine";
+  const prompt="You are a warm, knowledgeable sommelier helping someone in the US choose a bottle for a meal.\n\n"+
+    "Meal: "+ask.meal+"\nRegion wanted: "+(ask.region||"open to any region")+"\nStyle: "+typeTxt+"\nWhere they shop: "+([...ask.stores].join(", ")||"any wine shop")+"\nBudget per bottle: "+ask.budget+"\n"+
+    (ask.skipMass?"Avoid mass-market supermarket brands such as Barefoot, Yellow Tail, Sutter Home, Woodbridge and Cupcake.\n":"")+
+    (ask.extra?"Also: "+ask.extra+"\n":"")+
+    (mine?"\nWines already in their journal (name, region, country, type, their rating):\n"+mine+"\n":"")+
+    "\nRules:\n- Suggest 3 bottles that are widely distributed in the US and genuinely likely to be found at the stores named.\n- For Trader Joe's, name a specific label only if you are confident Trader Joe's carries it; otherwise name the appellation, grape or style to look for there and say so in lookFor.\n- Keep prices realistic for US retail, as an approximate range.\n- If a region was given, every pick comes from that region.\n- Say what about the wine suits the dish (acidity, body, earthiness, spice).\n\n"+
+    'Reply with only JSON in this shape: {"intro":"one or two sentences","picks":[{"name":"wine as named on the label","producer":"","region":"","country":"","type":"red|white|green|rose|sparkling|dessert|orange|na","grape":"","price":"approx range like $12–15","where":["store names from their list"],"why":"one sentence on why it suits the meal","lookFor":"one short tip on finding it or a substitute"}],"tip":"one short serving tip"}';
+  ask.status="loading";ask.error="";ask.result=null;ask.ctl=new AbortController();render();
+  try{
+    const res=await sampleFn.json(prompt,{signal:ask.ctl.signal});
+    if(!res||!Array.isArray(res.picks))throw {code:"invalid_json"};
+    ask.result=res;
+  }catch(e){
+    const c=e&&e.code;
+    if(c==="cancelled")ask.error="";
+    else if(c==="not_granted"||c==="sampling_disabled"||c==="not_declared"||c==="capability_disabled"||c==="capability_removed"){sampleFn=null}
+    else if(c==="rate_limited")ask.error="That's a lot of questions in a row. Try again in a little while.";
+    else if(c==="session_expired")ask.error="Please sign in to Claude again, then try.";
+    else if(c==="invalid_json"||c==="empty_completion")ask.error="The answer came back garbled. Try again, or word the meal differently.";
+    else if(c==="refused")ask.error="Claude couldn't help with that one. Try rewording it.";
+    else ask.error="Something went wrong reaching Claude. Try again.";
+  }finally{ask.status="idle";ask.ctl=null;render()}
+}
+
+/* ---------- 3D glass (three.js) ---------- */
+var GL=null,DG=null;
+function glassSet(type){if(GL)GL.set(type)}
+function createGlass(el,o){
+  if(!window.THREE||!el)return null;
+  try{
+    const T3=window.THREE,W=o.w,H=o.h;
+    const renderer=new T3.WebGLRenderer({antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,3));renderer.setSize(W,H);el.appendChild(renderer.domElement);
+    const scene=new T3.Scene();
+    const cam=new T3.PerspectiveCamera(30,W/H,.1,50);cam.position.set(0,1.55,6.8);cam.lookAt(0,1.2,0);
+    scene.add(new T3.AmbientLight(0xffffff,.5));
+    const key=new T3.DirectionalLight(0xffffff,1.15);key.position.set(3,5,4);scene.add(key);
+    const warm=new T3.PointLight(0xCBB07A,1.4,20);warm.position.set(-3,2,3);scene.add(warm);
+    const V=(x,y)=>new T3.Vector2(x,y);
+    const glassMat=new T3.MeshPhongMaterial({color:o.light?0x9aa0a6:0xffffff,transparent:true,opacity:o.light?.32:.24,shininess:160,specular:0xffffff,side:T3.DoubleSide,depthWrite:false});
+    const wineMat=new T3.MeshPhongMaterial({color:0x6A1228,shininess:90,specular:0x553333,transparent:true,opacity:.93});
+    const rimMat=new T3.MeshBasicMaterial({color:o.light?0x8a9096:0xffffff,transparent:true,opacity:.75});
+    function makeGlass(shellPts,rimY,rimR,winePts,pivotY){
+      const g=new T3.Group();
+      g.add(new T3.Mesh(new T3.LatheGeometry(shellPts,64),glassMat));
+      const rim=new T3.Mesh(new T3.TorusGeometry(rimR,.012,8,64),rimMat);rim.rotation.x=Math.PI/2;rim.position.y=rimY;g.add(rim);
+      const pivot=new T3.Group();pivot.position.y=pivotY;
+      const wine=new T3.Mesh(new T3.LatheGeometry(winePts,64),wineMat);wine.position.y=-pivotY;pivot.add(wine);g.add(pivot);
+      g.userData.pivot=pivot;return g;
+    }
+    const goblet=makeGlass([V(0,0),V(.55,0),V(.56,.03),V(.1,.07),V(.05,.18),V(.045,.95),V(.09,1.03),V(.36,1.16),V(.5,1.4),V(.55,1.7),V(.52,2.0),V(.47,2.25)],2.25,.47,
+      [V(0,1.07),V(.1,1.07),V(.34,1.19),V(.47,1.4),V(.515,1.62),V(0,1.62)],1.4);
+    const flute=makeGlass([V(0,0),V(.42,0),V(.43,.03),V(.08,.07),V(.04,.18),V(.035,.9),V(.07,.97),V(.19,1.07),V(.26,1.3),V(.3,1.8),V(.31,2.25),V(.3,2.5)],2.5,.3,
+      [V(0,1.02),V(.08,1.02),V(.2,1.12),V(.25,1.32),V(.285,1.8),V(.29,2.08),V(0,2.08)],1.6);
+    const port=makeGlass([V(0,0),V(.36,0),V(.37,.03),V(.07,.06),V(.04,.14),V(.035,.52),V(.07,.58),V(.22,.68),V(.31,.88),V(.33,1.08),V(.29,1.32),V(.25,1.46)],1.46,.25,
+      [V(0,.63),V(.08,.63),V(.23,.74),V(.3,.9),V(.315,1.04),V(0,1.04)],.85);
+    const foam=new T3.Mesh(new T3.CylinderGeometry(.29,.29,.05,48),new T3.MeshPhongMaterial({color:0xFFF8E6,shininess:30,transparent:true,opacity:.95}));foam.position.y=2.1;flute.add(foam);
+    const bMat=new T3.MeshBasicMaterial({color:0xFFFFFF,transparent:true,opacity:.95});
+    const bubbles=[];const streams=[[0,0],[.1,.05],[-.09,.07],[.05,-.11],[-.12,-.06],[.14,-.02]];
+    for(let i=0;i<42;i++){const s=streams[i%streams.length];const b=new T3.Mesh(new T3.SphereGeometry(.03+Math.random()*.016,8,8),bMat);b.userData={x:s[0],z:s[1],sp:.9+Math.random()*.6,w:Math.random()*6};b.position.set(s[0],1.08+Math.random()*1,s[1]);flute.add(b);bubbles.push(b)}
+    const spritz=[];for(let i=0;i<10;i++){const b=new T3.Mesh(new T3.SphereGeometry(.02,8,8),bMat);b.userData={a:Math.random()*Math.PI*2,r:.05+Math.random()*.25,sp:.25+Math.random()*.3};b.position.y=1.12+Math.random()*.45;goblet.add(b);spritz.push(b)}
+    const holder=new T3.Group();holder.add(goblet,flute,port);scene.add(holder);
+    const COL={red:0x6A1228,white:0xE6CF72,rose:0xF2909C,sparkling:0xF3DC8A,dessert:0x5A2A0E,orange:0xF07A1A,green:0xC9DE6E,na:0x8FC79E,all:0x6A1228};
+    const target=new T3.Color(COL.red);let mode="red";
+    const still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let t=0,last=0,running=false,alive=true,dragging=false,lastX=0,vel=0;
+    function draw(){renderer.render(scene,cam)}
+    function frame(now){
+      if(!alive||document.hidden){running=false;return}
+      const dt=Math.min(.05,(now-last)/1000||.016);last=now;t+=dt;
+      if(!dragging){holder.rotation.y+=dt*.5+vel;vel*=.92}
+      const pv=(mode==="sparkling"?flute:mode==="dessert"?port:goblet).userData.pivot;pv.rotation.z=Math.sin(t*1.3)*.04;pv.rotation.x=Math.cos(t*1.1)*.03;
+      wineMat.color.lerp(target,.08);
+      if(mode==="sparkling")bubbles.forEach(b=>{b.position.y+=dt*b.userData.sp;if(b.position.y>2.06)b.position.y=1.08;b.position.x=b.userData.x+Math.sin(t*3+b.userData.w)*.012;b.position.z=b.userData.z});
+      if(mode==="green")spritz.forEach(b=>{b.position.y+=dt*b.userData.sp;if(b.position.y>1.58)b.position.y=1.12;b.position.x=Math.cos(b.userData.a)*b.userData.r;b.position.z=Math.sin(b.userData.a)*b.userData.r});
+      draw();
+      if(!still)requestAnimationFrame(frame);else running=false;
+    }
+    function kick(){if(alive&&!running){running=true;last=performance.now();requestAnimationFrame(frame)}}
+    const onVis=()=>{if(!document.hidden)kick()};document.addEventListener("visibilitychange",onVis);
+    if(o.drag){
+      el.style.touchAction="pan-y";el.style.cursor="grab";
+      el.addEventListener("pointerdown",e=>{dragging=true;lastX=e.clientX;try{el.setPointerCapture(e.pointerId)}catch(_){}});
+      el.addEventListener("pointermove",e=>{if(!dragging)return;const dx=e.clientX-lastX;lastX=e.clientX;holder.rotation.y+=dx*.025;vel=dx*.004;if(still)draw()});
+      const up=()=>{dragging=false};el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up);
+    }
+    const api={set(type){mode=type;target.set(COL[type]||COL.red);flute.visible=type==="sparkling";port.visible=type==="dessert";goblet.visible=!flute.visible&&!port.visible;spritz.forEach(b=>b.visible=type==="green");if(still){wineMat.color.copy(target);draw()}},
+      dispose(){alive=false;document.removeEventListener("visibilitychange",onVis);try{renderer.dispose();renderer.forceContextLoss&&renderer.forceContextLoss()}catch(_){}renderer.domElement.remove()}};
+    api.set("red");kick();if(still)draw();
+    return api;
+  }catch(e){el.style.display="none";return null}
+}
+function initGlass(){GL=createGlass(document.getElementById("glass"),{w:84,h:124});if(GL)GL.set(state.type)}
+
+/* ---------- zoomable world map of your regions (d3-geo) ---------- */
+var COORD={sardinia:[40.1,9],corsica:[42.1,9.1],israel:[32.8,35.3],virginia:[38,-78.5],napa:[38.5,-122.3],provence:[43.5,6],champagne:[49,4],spain:[42.4,-2.6],portugal:[41.2,-7.7],italy:[43.3,11.3],germany:[49.9,7],andes:[-33,-68.8],france:[44.8,-.6],aegean:[36.4,25.4],sicily:[37.7,15],australia:[-34.5,138.9],newzealand:[-41.5,173.9],southafrica:[-33.9,18.9],georgia:[41.9,45.8],hungary:[48.1,21.4],lebanon:[33.8,35.9],newyork:[42.6,-76.9],pnw:[45.3,-123.1],canada:[43.1,-79.2],adriatic:[43.2,16.6],uruguay:[-34.6,-56],mexico:[32.1,-116.6],england:[50.9,-.3]};
+var THEME_COUNTRY={sardinia:"Italy",corsica:"France",israel:"Israel",virginia:"United States of America",napa:"United States of America",provence:"France",champagne:"France",spain:"Spain",portugal:"Portugal",italy:"Italy",germany:"Germany",andes:"Argentina",france:"France",aegean:"Greece",sicily:"Italy",australia:"Australia",newzealand:"New Zealand",southafrica:"South Africa",georgia:"Georgia",hungary:"Hungary",lebanon:"Lebanon",newyork:"United States of America",pnw:"United States of America",canada:"Canada",adriatic:["Croatia","Slovenia"],uruguay:"Uruguay",mexico:"Mexico",england:"United Kingdom"};
+var MAP=null,MAPLIB=null,GEO={};
+function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement("script");s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+function mapLibs(){if(!MAPLIB)MAPLIB=Promise.all([window.d3?0:loadScript("https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"),window.topojson?0:loadScript("https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js")]).then(()=>fetch("geo/countries-110m.json")).then(r=>r.json()).then(t=>{GEO.lo=prep(t)});return MAPLIB}
+function prep(t){return {countries:topojson.feature(t,t.objects.countries).features,borders:topojson.mesh(t,t.objects.countries,(a,b)=>a!==b),land:topojson.feature(t,t.objects.land||t.objects.countries)}}
+function loadHi(){if(!GEO.hiP)GEO.hiP=fetch("geo/countries-50m.json").then(r=>r.json()).then(t=>{GEO.hi=prep(t);MAP&&MAP.draw()}).catch(()=>{});return GEO.hiP}
+function createMap(){
+  const wrap=document.createElement("div");wrap.className="map-wrap";
+  const cv=document.createElement("canvas");cv.setAttribute("aria-label","World map of the regions in your journal");cv.setAttribute("role","img");
+  const labels=document.createElement("div");labels.className="globe-labels";
+  const ctrls=document.createElement("div");ctrls.className="map-ctrls";
+  ctrls.innerHTML='<button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="out" aria-label="Zoom out">−</button><button type="button" data-z="globe" aria-label="Show whole globe"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></button>';
+  const bar=document.createElement("div");bar.className="map-bar";
+  wrap.append(cv,labels,ctrls,bar);
+  const ctx=cv.getContext("2d");
+  let W=360,H=340,dpr=Math.min(window.devicePixelRatio||1,2.5);
+  const proj=d3.geoOrthographic().clipAngle(90).precision(.3);
+  const path=d3.geoPath(proj,ctx);
+  const grat=d3.geoGraticule10();
+  let rot=[0,-30],k=1,pins=[],fills={},sel=null,onPick=null,anim=0,interacting=false;
+  const base=()=>Math.min(W,H)/2-14;
+  function setSize(w){W=Math.max(260,Math.min(w,760));H=Math.round(Math.min(420,W*.95));cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+"px";cv.style.height=H+"px";wrap.style.height=H+"px";draw()}
+  function draw(){
+    proj.translate([W/2,H/2]).scale(base()*k).rotate(rot);
+    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+    const g=(k>=2.6&&GEO.hi&&!interacting)?GEO.hi:GEO.lo;if(!g)return;
+    if(k>=2.6&&!GEO.hi)loadHi();
+    // sphere with soft light
+    const r=base()*k,cx=W/2,cy=H/2;
+    const grd=ctx.createRadialGradient(cx-r*.35,cy-r*.4,r*.1,cx,cy,r);grd.addColorStop(0,"#1E2A3B");grd.addColorStop(1,"#0C1119");
+    ctx.beginPath();path({type:"Sphere"});ctx.fillStyle=grd;ctx.fill();
+    ctx.beginPath();path(grat);ctx.strokeStyle="rgba(255,255,255,.07)";ctx.lineWidth=1;ctx.stroke();
+    // land
+    ctx.beginPath();g.countries.forEach(f=>path(f));ctx.fillStyle="#3A3934";ctx.fill();
+    // countries you drink from
+    g.countries.forEach(f=>{const c=fills[f.properties.name];if(!c)return;ctx.beginPath();path(f);ctx.fillStyle=c;ctx.globalAlpha=.85;ctx.fill();ctx.globalAlpha=1});
+    ctx.beginPath();path(g.borders);ctx.strokeStyle=k>=2?"rgba(255,255,255,.35)":"rgba(255,255,255,.16)";ctx.lineWidth=k>=4?1:.6;ctx.stroke();
+    // rim light
+    ctx.beginPath();path({type:"Sphere"});ctx.strokeStyle="rgba(203,176,122,.55)";ctx.lineWidth=1.2;ctx.stroke();
+    // country names when zoomed in
+    if(k>=3){ctx.font="600 10.5px Archivo, Helvetica, Arial, sans-serif";ctx.textAlign="center";ctx.fillStyle="rgba(255,255,255,.72)";
+      const shown=[];g.countries.forEach(f=>{const a=d3.geoArea(f);if(a*k*k<.0009)return;const c=d3.geoCentroid(f);if(d3.geoDistance(c,[-rot[0],-rot[1]])>1.35)return;const p=proj(c);if(!p||p[0]<20||p[0]>W-20||p[1]<14||p[1]>H-14)return;if(shown.some(q=>Math.abs(q[0]-p[0])<70&&Math.abs(q[1]-p[1])<16))return;shown.push(p);ctx.fillText(f.properties.name.toUpperCase(),p[0],p[1])})}
+    // pins
+    const placed=[];
+    pins.map(p=>{const vis=d3.geoDistance([p.lon,p.lat],[-rot[0],-rot[1]])<Math.PI/2-.05;const xy=proj([p.lon,p.lat]);return {p,vis,xy}}).sort((a,b)=>(b.xy?b.xy[1]:0)-(a.xy?a.xy[1]:0)).forEach(o=>{
+      const p=o.p;if(!o.vis||!o.xy){p.el.style.opacity=0;p.el.style.pointerEvents="none";p.el.tabIndex=-1;return}
+      const [x,y]=o.xy,rad=5+Math.min(p.count,8)*1.2;
+      ctx.beginPath();ctx.arc(x,y,rad+5,0,Math.PI*2);ctx.fillStyle="rgba(255,255,255,.18)";ctx.fill();
+      ctx.beginPath();ctx.arc(x,y,rad,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle="#FFFFFF";ctx.stroke();
+      if(sel===p.key){ctx.beginPath();ctx.arc(x,y,rad+10,0,Math.PI*2);ctx.strokeStyle=p.color;ctx.lineWidth=2;ctx.stroke()}
+      let ly=y-rad-8;const w=p.el.offsetWidth||90;let kk=0,hit=true;const b0=ly;
+      while(hit&&kk<12){ly=kk===0?b0:b0+(kk%2?1:-1)*Math.ceil(kk/2)*24+(kk%2?rad*2+24:0);hit=ly<26||ly>H-6||placed.some(r=>Math.abs(r.x-x)<(r.w+w)/2+4&&Math.abs(r.y-ly)<22);kk++}
+      placed.push({x,y:ly,w});
+      p.el.style.transform="translate("+Math.round(x)+"px,"+Math.round(ly)+"px) translate(-50%,-100%)";p.el.style.opacity=1;p.el.style.pointerEvents="auto";p.el.tabIndex=0;
+    });
+    const s=pins.find(p=>p.key===sel);
+    bar.innerHTML=s?'<span><b>'+esc(s.label)+"</b> · "+s.count+" wine"+(s.count>1?"s":"")+'</span><button type="button" class="map-see">See wines</button>':'<span>Drag to spin · pinch or + to zoom · tap a region</span>';
+    const sb=bar.querySelector(".map-see");if(sb)sb.onclick=()=>onPick&&onPick(s);
+  }
+  function fly(toRot,toK,ms){
+    cancelAnimationFrame(anim);const r0=rot.slice(),k0=k,t0=performance.now();
+    const still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(still){rot=toRot;k=toK;draw();return}
+    let dl=toRot[0]-r0[0];dl=((dl+540)%360)-180;
+    const step=now=>{const u=Math.min(1,(now-t0)/ms),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;rot=[r0[0]+dl*e,r0[1]+(toRot[1]-r0[1])*e];k=Math.exp(Math.log(k0)+(Math.log(toK)-Math.log(k0))*e);interacting=u<1;draw();if(u<1)anim=requestAnimationFrame(step)};
+    anim=requestAnimationFrame(step);
+  }
+  function setPins(list,pick,colors){
+    onPick=pick;fills=colors;labels.innerHTML="";
+    pins=list.map(p=>{const b=document.createElement("button");b.type="button";b.className="globe-label";b.style.setProperty("--c",p.color);b.style.setProperty("--k",p.ink||"#FFFFFF");b.textContent=p.label+" · "+p.count;
+      b.onclick=()=>{sel=p.key;fly([-p.lon,-p.lat],Math.max(k,6),900)};labels.appendChild(b);return Object.assign({},p,{el:b})});
+    // frame all pins
+    if(list.length){
+      const pts={type:"MultiPoint",coordinates:list.map(p=>[p.lon,p.lat])};const c=d3.geoCentroid(pts);
+      let far=0;list.forEach(p=>{far=Math.max(far,d3.geoDistance(c,[p.lon,p.lat]))});
+      rot=[-c[0],-c[1]];k=Math.max(1,Math.min(6,.75/Math.max(.12,Math.sin(Math.min(far,1.4)))));
+      if(list.length===1)k=3.2;
+    }
+    draw();
+  }
+  // gestures
+  const pts=new Map();let lastDist=0,lastMid=null,moved=false;
+  cv.style.touchAction="none";
+  cv.addEventListener("pointerdown",e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);moved=false;cancelAnimationFrame(anim);interacting=true});
+  cv.addEventListener("pointermove",e=>{
+    if(!pts.has(e.pointerId))return;const prev=pts.get(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);
+    if(pts.size===1){const dx=e.clientX-prev[0],dy=e.clientY-prev[1];if(Math.abs(dx)+Math.abs(dy)>1)moved=true;const f=.25/k;rot=[rot[0]+dx*f*1.6,Math.max(-85,Math.min(85,rot[1]-dy*f*1.6))];draw()}
+    else if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(lastDist){k=Math.max(1,Math.min(40,k*d/lastDist));moved=true;draw()}lastDist=d}
+  });
+  const end=e=>{pts.delete(e.pointerId);if(pts.size<2)lastDist=0;if(!pts.size){interacting=false;draw()}};
+  cv.addEventListener("pointerup",end);cv.addEventListener("pointercancel",end);
+  cv.addEventListener("wheel",e=>{e.preventDefault();k=Math.max(1,Math.min(40,k*Math.exp(-e.deltaY*.0015)));draw()},{passive:false});
+  cv.addEventListener("dblclick",()=>fly(rot.slice(),Math.min(40,k*2),400));
+  ctrls.onclick=e=>{const z=e.target.closest("[data-z]");if(!z)return;const m=z.dataset.z;if(m==="globe"){sel=null;fly(rot.slice(),1,700)}else fly(rot.slice(),Math.max(1,Math.min(40,m==="in"?k*1.8:k/1.8)),350)};
+  return {wrap,setSize,setPins,draw};
+}
+function mountMap(){
+  if(state.view!=="regions")return;
+  const box=$("#globeBox");if(!box)return;
+  const groups={},fills={};
+  source().forEach(w=>{const t=(w.theme&&THEME_BY_KEY[w.theme])||autoTheme(w);if(!t||!COORD[t.key])return;const col=t.key==="champagne"?t.hink:t.hbg;(groups[t.key]=groups[t.key]||{label:t.label,key:t.key,color:col,ink:t.key==="champagne"?"#111111":t.hink,lat:COORD[t.key][0],lon:COORD[t.key][1],count:0}).count++});
+  const list=Object.values(groups).sort((a,b)=>b.count-a.count);
+  list.slice().reverse().forEach(g=>{[].concat(THEME_COUNTRY[g.key]||[]).forEach(c=>{fills[c]=g.color})});
+  box.insertAdjacentHTML("afterbegin",'<p class="map-loading">Loading map…</p>');
+  mapLibs().then(()=>{
+    if(state.view!=="regions"||!box.isConnected)return;
+    if(!MAP)MAP=createMap();
+    const ld=box.querySelector(".map-loading");ld&&ld.remove();
+    box.prepend(MAP.wrap);MAP.setSize(box.clientWidth);
+    MAP.setPins(list,p=>{state.themeKey=p.key;state.region=null;state.pairing=null;state.type="all";state.q="";go("journal")},fills);
+  }).catch(()=>{const ld=box.querySelector(".map-loading");if(ld)ld.textContent="The map couldn't load. Check your connection and reopen Regions."});
+}
+
+/* ---------- store catalog: bottles these retailers regularly carry ---------- */
+var STORE_INFO={costco:{l:"Costco",n:"Kirkland Signature wines rotate through the year. Champagne, Prosecco, Toscana and Sonoma Chardonnay are usually there year-round."},tj:{l:"Trader Joe's",n:"Many of these are Trader Joe's exclusives. Some states don't allow wine at Trader Joe's."},totalwine:{l:"Total Wine",n:"Bottles marked Winery Direct are Total Wine's own imports, so you won't find them elsewhere."},wholefoods:{l:"Whole Foods",n:"Strong on organic and biodynamic bottles. Six or more bottles usually gets 10% off."},any:{l:"Most wine shops",n:"Widely distributed bottles you'll find at most supermarkets and wine shops."}};
+var CATALOG=[
+ ["costco","Kirkland Signature Brut Champagne","sparkling","Chardonnay, Pinot Noir","Champagne","France","$20–30","Grand cru grapes from the village of Verzenay. Usually in stock."],
+ ["costco","Kirkland Signature Asolo Prosecco Superiore","sparkling","Glera","Veneto","Italy","Under $10","Crisp everyday bubbles. Usually in stock."],
+ ["costco","Kirkland Signature Toscana","red","Sangiovese","Tuscany","Italy","$15–25","A long-running favorite of value reviewers."],
+ ["costco","Kirkland Signature Sonoma Chardonnay","white","Chardonnay","Sonoma","USA","Under $10","Easy, lightly oaked Chardonnay."],
+ ["costco","Kirkland Signature Moscato d'Asti","dessert","Moscato","Piedmont","Italy","Under $10","Lightly sweet and fizzy, great with fruit desserts."],
+ ["costco","Kirkland Signature Barolo","red","Nebbiolo","Piedmont","Italy","$20–30","A big-name Italian red at a small price."],
+ ["costco","Kirkland Signature Châteauneuf-du-Pape","red","Grenache blend","Rhône","France","$20–30","Dried red fruit, herbs and leather."],
+ ["costco","Kirkland Signature Rioja Reserva","red","Tempranillo","Rioja","Spain","Under $10","Classic oak-aged Rioja for very little."],
+ ["costco","Kirkland Signature Friuli Pinot Grigio","white","Pinot Grigio","Friuli","Italy","Under $10","Clean, easy-drinking white for any occasion."],
+ ["costco","Kirkland Signature Malbec","red","Malbec","Mendoza","Argentina","About $7","Juicy and plush, a winner for burgers."],
+ ["costco","Kirkland Signature Bordeaux Supérieur","red","Merlot blend","Bordeaux","France","About $6","Scored 93 points from Tastings.com."],
+ ["costco","Kirkland Signature Napa Valley Cabernet","red","Cabernet Sauvignon","Napa","USA","About $15","Napa Cab for steak night."],
+ ["costco","Kirkland Signature Series Oakville Cabernet","red","Cabernet Sauvignon","Napa","USA","About $20","A step up, from Napa's Oakville area."],
+ ["costco","Kirkland Signature Chianti Classico Riserva","red","Sangiovese","Tuscany","Italy","About $9","Pasta and pizza red."],
+ ["costco","Kirkland Signature Côtes de Provence Rosé","rose","Grenache, Cinsault","Provence","France","About $10","Released in early summer."],
+ ["costco","Kirkland Signature Brunello di Montalcino","red","Sangiovese","Tuscany","Italy","$20–30","Usually arrives in September."],
+ ["costco","Kirkland Signature Chablis","white","Chardonnay","Burgundy","France","$15–20","Unoaked, mineral Chardonnay for oysters and fish."],
+ ["costco","Kirkland Signature Carneros Pinot Noir","red","Pinot Noir","Napa","USA","$15–20","Silky Pinot from cool Carneros."],
+ ["tj","Espiral Vinho Verde","green","White blend","Vinho Verde","Portugal","About $5","Crisp, slightly fizzy, 9% alcohol. A Trader Joe's exclusive."],
+ ["tj","Ruggero di Bardo Susumaniello","red","Susumaniello","Puglia","Italy","About $10","A rare southern Italian grape; dark fruit and easy to love."],
+ ["tj","Honey Moon Viognier","white","Viognier","California","USA","About $6","Peachy and floral, good with spicy food."],
+ ["tj","Trader Joe's Reserve Meritage","red","Bordeaux blend","Paso Robles","USA","About $10","Often named the best Trader Joe's-label red."],
+ ["tj","Conte di Bregonzo Amarone della Valpolicella","red","Corvina blend","Veneto","Italy","$15–25","Rich and raisiny. Decant it before dinner."],
+ ["tj","Cecilia Beretta Prosecco Rosé","sparkling","Glera, Pinot Noir","Veneto","Italy","Under $10","Pink bubbles for brunch."],
+ ["tj","Lacheteau Muscadet Sèvre-et-Maine Sur Lie","white","Melon de Bourgogne","Loire","France","Under $10","Bright and salty, made for seafood."],
+ ["tj","Foncastel Picpoul de Pinet","white","Picpoul","Languedoc","France","Under $10","Zesty, lemony white for summer."],
+ ["tj","Epicuro Nero d'Avola","red","Nero d'Avola","Sicily","Italy","Under $10","Jammy and bold: a classic pizza wine."],
+ ["tj","Villa Cerrina Montepulciano d'Abruzzo","red","Montepulciano","Abruzzo","Italy","Under $10","A weeknight pasta red."],
+ ["tj","The Pass Sauvignon Blanc","white","Sauvignon Blanc","Marlborough","New Zealand","Under $10","Classic, balanced Marlborough style."],
+ ["tj","Trader Joe's Grand Reserve Barossa Shiraz","red","Shiraz","Barossa","Australia","$10–15","Big and ripe for burgers and BBQ."],
+ ["tj","LaGranja360 Cava Brut","sparkling","Cava blend","Penedès","Spain","About $7","Spanish bubbles for much less than Champagne."],
+ ["tj","Porta 6 Tinto","red","Red blend","Lisboa","Portugal","About $10","Juicy, smooth Portuguese red."],
+ ["tj","Villa Antica Asolo Prosecco Superiore","sparkling","Glera","Veneto","Italy","Under $15","Creamy and refreshing."],
+ ["tj","Sauvignon de Seguin Bordeaux Blanc","white","Sauvignon Blanc","Bordeaux","France","Under $10","Fresh and creamy white Bordeaux."],
+ ["tj","Paso Dragon","red","Red blend","Paso Robles","USA","About $10","Good grip and sound fruit."],
+ ["tj","Le Lodole Rosso di Toscana","red","Sangiovese blend","Tuscany","Italy","$10–15","A balanced Super Tuscan style."],
+ ["tj","Platinum Reserve Napa Oakville Cabernet","red","Cabernet Sauvignon","Napa","USA","$20–25","A special-occasion Cab without the Napa price."],
+ ["totalwine","Renieri Invetro Super Tuscan","red","Sangiovese","Tuscany","Italy","About $19","Winery Direct. Supple and dark-fruited; rated 92 by Total Wine's experts."],
+ ["totalwine","Kia Ora Signature Marlborough Sauvignon Blanc","white","Sauvignon Blanc","Marlborough","New Zealand","About $19","Winery Direct, made just for Total Wine."],
+ ["totalwine","Borrasca Prosecco DOCG","sparkling","Glera","Veneto","Italy","About $17","Winery Direct. Almond and green pear in creamy bubbles."],
+ ["totalwine","Vennstone Pinot Noir by Joe Wagner","red","Pinot Noir","California","USA","$15–20","Winery Direct, from the Wagner family of Caymus."],
+ ["totalwine","Whitehaven Sauvignon Blanc","white","Sauvignon Blanc","Marlborough","New Zealand","About $14","Grapefruit and passion fruit, very reliable."],
+ ["totalwine","La Crema Sonoma Coast Chardonnay","white","Chardonnay","Sonoma","USA","$15–20","Rich but balanced Sonoma Chardonnay."],
+ ["totalwine","Joel Gott Sauvignon Blanc","white","Sauvignon Blanc","California","USA","About $10","Crisp and citrusy, easy to find."],
+ ["totalwine","Veuve Clicquot Yellow Label Brut","sparkling","Pinot Noir blend","Champagne","France","$50–65","The classic celebration Champagne."],
+ ["totalwine","J Vineyards Brut Rosé","sparkling","Pinot Noir, Chardonnay","Russian River","USA","$35–45","Scored 91 from Decanter."],
+ ["wholefoods","Cleto Chiarli Centenario Lambrusco Amabile","sparkling","Lambrusco Grasparossa","Emilia-Romagna","Italy","About $16","Lightly sweet, fizzy red. Great with salami and pizza."],
+ ["wholefoods","Oregon Trails Pinot Noir","red","Pinot Noir","Willamette","USA","About $18","Bright Oregon Pinot."],
+ ["wholefoods","J Vineyards California Pinot Gris","white","Pinot Gris","California","USA","About $15","Juicy pear and citrus."],
+ ["wholefoods","Banshee Sonoma County Pinot Noir","red","Pinot Noir","Sonoma","USA","$20–25","Silky and spicy."],
+ ["wholefoods","Biokult Rosé Secco","sparkling","Rosé blend","Burgenland","Austria","$15–20","Organic, lightly sparkling pink."],
+ ["wholefoods","Buil & Giné Giné Giné Priorat","red","Garnacha, Cariñena","Priorat","Spain","About $22","Dark, mineral Spanish red."],
+ ["any","Cline Ancient Vines Zinfandel","red","Zinfandel","California","USA","$12–16","Old-vine Zin, spicy and full. Great for BBQ."],
+ ["any","Chateau Ste. Michelle Riesling","white","Riesling","Columbia Valley","USA","About $10","Off-dry and fruity; good with spicy takeout."],
+ ["any","Bonterra Cabernet Sauvignon","red","Cabernet Sauvignon","California","USA","About $12","Organic, smooth dark berries."]
+].map((a,i)=>({id:"c"+i,s:a[0],name:a[1],type:a[2],grape:a[3],region:a[4],country:a[5],price:a[6],note:a[7]}));
+var SHOP_SOURCES=[["Reverse Wine Snob: best Kirkland Signature wines","https://www.reversewinesnob.com/search/label/kirkland-signature"],["Reverse Wine Snob: best wines at Trader Joe's","https://www.reversewinesnob.com/search/label/trader-joes/"],["Camille Styles: best Trader Joe's wines","https://camillestyles.com/?p=239011"],["VinePair: best Trader Joe's wines","https://vinepair.com/buy-this-booze/best-trader-joes-wines/"],["Chowhound: Costco's best wines","https://www.chowhound.com/stories/costcos-best-red-white-and-rose-wines"],["Total Wine: top wines collection","https://www.totalwine.com/curated-collections/top-6-wines-of-2020"],["The Wine Daily: best Whole Foods wines","https://thewinedaily.com/?p=7913"],["Wine Turtle: wines at Whole Foods","https://wineturtle.com/?p=18237"]];
+var shop={store:"all",type:"all",q:""};
+function renderShop(){
+  let h='<h2 class="section-title">Shop</h2><p class="shop-note">Bottles these stores regularly carry, picked from published reviews (November 2026). Prices are typical, and shelves change by state and season, so check your store.</p>';
+  h+='<div class="tgrid" role="group" aria-label="Store"><button class="tcell" data-store-f="all" aria-pressed="'+(shop.store==="all")+'">All stores<small>'+CATALOG.length+"</small></button>";
+  Object.keys(STORE_INFO).forEach(k=>{h+='<button class="tcell" data-store-f="'+k+'" aria-pressed="'+(shop.store===k)+'">'+esc(STORE_INFO[k].l)+"<small>"+CATALOG.filter(c=>c.s===k).length+"</small></button>"});
+  h+="</div>";
+  h+='<div class="toolbar"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5A6784" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="shopQ" type="search" placeholder="Search" value="'+esc(shop.q)+'" aria-label="Search the store list"></label><select class="sort" id="shopType" aria-label="Wine type"><option value="all">All types</option>'+TYPES.map(t=>'<option value="'+t.k+'"'+(shop.type===t.k?" selected":"")+">"+t.l+"</option>").join("")+"</select></div>";
+  if(shop.store!=="all")h+='<p class="shop-note"><b>'+esc(STORE_INFO[shop.store].l)+":</b> "+esc(STORE_INFO[shop.store].n)+"</p>";
+  const q=shop.q.trim().toLowerCase();
+  const list=CATALOG.filter(c=>(shop.store==="all"||c.s===shop.store)&&(shop.type==="all"||c.type===shop.type||(shop.type==="white"&&c.type==="green"))&&(!q||[c.name,c.grape,c.region,c.country,c.note,STORE_INFO[c.s].l].join(" ").toLowerCase().includes(q)));
+  if(!list.length)h+='<div class="empty">Nothing matches. Try another store or type.</div>';
+  h+='<div class="shop-list">'+list.map(c=>{const t=themeFor(c);return '<article class="sitem"><div class="sbar" style="background:'+t.hbg+'"></div><div class="sbody"><div class="row"><span class="rtag" style="background:'+t.hbg+';color:'+t.hink+'">'+esc(t.label)+'</span><span class="spill">'+esc(STORE_INFO[c.s].l)+'</span></div><h4>'+esc(c.name)+'</h4><div class="meta"><span class="dot '+esc(c.type)+'" style="vertical-align:-1px;margin-right:6px"></span>'+esc([TYPE_LABEL[c.type],c.grape,c.region].filter(Boolean).join(" · "))+'</div><p class="snote">'+esc(c.note)+'</p><div class="row" style="justify-content:space-between"><span class="score">'+esc(c.price)+'</span><button type="button" class="btn ghost sadd" data-shopadd="'+c.id+'">+ Add to my book</button></div></div></article>'}).join("")+"</div>";
+  h+='<details class="more shop-src"><summary>Where this list comes from</summary><ul>'+SHOP_SOURCES.map(s=>'<li><a href="'+s[1]+'" target="_blank" rel="noopener">'+esc(s[0])+"</a></li>").join("")+"</ul></details>";
+  return h;
+}
+function bindShop(){
+  document.querySelectorAll("[data-store-f]").forEach(b=>b.onclick=()=>{shop.store=b.dataset.storeF;render()});
+  const q=$("#shopQ");if(q)q.oninput=()=>{shop.q=q.value;const pos=q.selectionStart;render();const n=$("#shopQ");n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}};
+  const t=$("#shopType");if(t)t.onchange=()=>{shop.type=t.value;render()};
+  document.querySelectorAll("[data-shopadd]").forEach(b=>b.onclick=()=>{const c=CATALOG.find(x=>x.id===b.dataset.shopadd);if(!c)return;openForm(null,{name:c.name,type:c.type,grape:c.grape,region:c.region,country:c.country,boughtAt:STORE_INFO[c.s].l==="Most wine shops"?"":STORE_INFO[c.s].l,price:(c.price.match(/\d+/)||[""])[0],notes:c.note,tasted:""})});
+}
+
+/* ---------- render ---------- */
+function render(){
+  document.querySelectorAll("[data-nav]").forEach(b=>b.setAttribute("aria-current",b.dataset.nav===state.view?"page":"false"));
+  const v=$("#view");
+  if(state.view==="regions")v.innerHTML=renderRegions();
+  else if(state.view==="pairings")v.innerHTML=renderPairings();
+  else if(state.view==="shop")v.innerHTML=renderShop();
+  else v.innerHTML=renderJournal();
+  bindView();bindAsk();bindShop();glassSet(state.type);mountMap();
+}
+
+function renderStats(list){
+  const rated=list.filter(w=>Number(w.myRating));
+  const regions={};list.forEach(w=>{const t=autoTheme(w)||(w.theme&&THEME_BY_KEY[w.theme]);const k=t?t.label:(w.region||w.country);if(k)regions[k]=(regions[k]||0)+1});
+  const top=Object.entries(regions).sort((a,b)=>b[1]-a[1])[0];
+  return '<div class="stats"><div class="stat"><b>'+list.length+'</b><span>wines</span></div><div class="stat"><b>'+(rated.length?avg(rated.map(w=>Number(w.myRating))).toFixed(1)+"★":"–")+'</b><span>avg rating</span></div><div class="stat"><b>'+esc(top?top[0]:"–")+'</b><span>top region</span></div></div>';
+}
+
+function filtered(){
+  let list=source().slice();
+  if(state.type!=="all")list=list.filter(w=>w.type===state.type||(state.type==="white"&&w.type==="green"));
+  if(state.region)list=list.filter(w=>(w.region||"")===state.region.region&&(w.country||"")===state.region.country);
+  if(state.pairing)list=list.filter(w=>(w.pairings||[]).includes(state.pairing));
+  if(state.themeKey)list=list.filter(w=>themeFor(w).key===state.themeKey);
+  const q=state.q.trim().toLowerCase();
+  if(q)list=list.filter(w=>[w.name,w.producer,w.grape,w.region,w.country,w.vintage,w.notes,w.boughtAt,(w.pairings||[]).join(" "),(w.critics||[]).map(c=>c.by).join(" ")].join(" ").toLowerCase().includes(q));
+  const s=state.sort;
+  list.sort((a,b)=>{
+    if(s==="rating")return (Number(b.myRating)||0)-(Number(a.myRating)||0);
+    if(s==="critic"){const A=bestCritic(a),B=bestCritic(b);return (B?norm(B):0)-(A?norm(A):0)}
+    if(s==="vintage")return (parseInt(b.vintage)||0)-(parseInt(a.vintage)||0);
+    return (b.createdAt||0)-(a.createdAt||0);
+  });
+  return list;
+}
+
+function renderJournal(){
+  const all=source();
+  const list=filtered();
+  const counts={};all.forEach(w=>{counts[w.type]=(counts[w.type]||0)+1;if(w.type==="green")counts.white=(counts.white||0)+1});
+  let h=renderStats(all);
+  h+='<h2 class="section-title">Your wines</h2>';
+  h+='<div class="tgrid" role="group" aria-label="Wine type"><button class="tcell" data-type="all" aria-pressed="'+(state.type==="all")+'"><span class="tdots"><span class="dot red"></span><span class="dot white"></span><span class="dot rose"></span></span>All<small>'+all.length+'</small></button>';
+  TYPES.forEach(t=>{h+='<button class="tcell" data-type="'+t.k+'" aria-pressed="'+(state.type===t.k)+'"><span class="dot '+t.k+'"></span>'+(t.s||t.l)+'<small>'+(counts[t.k]||0)+"</small></button>"});
+  h+="</div>";
+  h+='<div class="toolbar"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5A6784" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="q" type="search" placeholder="Search" value="'+esc(state.q)+'" aria-label="Search"></label>';
+  h+='<select class="sort" id="sort" aria-label="Sort"><option value="recent">Recent</option><option value="rating">My rating</option><option value="critic">Critic score</option><option value="vintage">Vintage</option></select></div>';
+  if(state.region)h+='<div class="active-filter">Region: '+esc(state.region.region||"Unspecified")+", "+esc(state.region.country||"")+'<button data-clear="region">Clear</button></div>';
+  if(state.pairing)h+='<div class="active-filter">Pairs with: '+esc(state.pairing)+'<button data-clear="pairing">Clear</button></div>';
+  if(state.themeKey&&THEME_BY_KEY[state.themeKey])h+='<div class="active-filter">Region: '+esc(THEME_BY_KEY[state.themeKey].label)+'<button data-clear="themeKey">Clear</button></div>';
+  if(isExampleMode())h+='<div class="banner">Examples. Tap <b>+ Add</b> to start your own.</div>';
+  if(!list.length)h+='<div class="empty">No wines match. Try another type or clear the search.</div>';
+  else h+='<div class="list">'+list.map(cardHtml).join("")+"</div>";
+  return h;
+}
+
+function cardHtml(w){
+  const c=bestCritic(w),t=themeFor(w);
+  const place=[w.region,w.country].filter(Boolean).join(", ");
+  return '<button class="card rcard" data-open="'+esc(w.id)+'" style="--rb:'+t.bg+';--rh:'+t.hbg+';--rk:'+t.hink+';--rs:'+t.star+'">'+
+    '<div class="card-band">'+ORN[t.orn](t)+'<span class="card-label">'+esc(t.label)+'</span></div>'+
+    '<div class="card-main">'+thumb(w)+
+    '<div class="card-body"><h3>'+esc(w.name||"Untitled wine")+(w.vintage?' <span class="vin">'+esc(w.vintage)+"</span>":"")+"</h3>"+
+    '<div class="meta"><span class="dot '+esc(w.type||"red")+'" style="vertical-align:-1px;margin-right:6px"></span>'+esc([TYPE_LABEL[w.type],place].filter(Boolean).join(" · "))+"</div>"+
+    '<div class="row">'+stars(w.myRating)+(c?scoreBadge(c):"")+"</div>"+
+    "</div></div></button>";
+}
+
+function renderRegions(){
+  const all=source();
+  const byC={};
+  all.forEach(w=>{const c=w.country||"Unspecified";const r=w.region||"";(byC[c]=byC[c]||{});(byC[c][r]=byC[c][r]||[]).push(w)});
+  const countries=Object.keys(byC).sort((a,b)=>Object.values(byC[b]).flat().length-Object.values(byC[a]).flat().length);
+  let h=renderStats(all)+'<h2 class="section-title">Regions</h2>';
+  h+='<div class="globe-box" id="globeBox"></div>';
+  h+='<div class="groups">';
+  countries.forEach(c=>{
+    const regs=byC[c];const total=Object.values(regs).flat().length;
+    const gt=themeFor({country:c==="Unspecified"?"":c,region:Object.keys(regs).length===1?Object.keys(regs)[0]:""});
+    h+='<section class="group"><div class="orn">'+ORN[gt.orn](gt)+'</div><h3 style="--g:'+gt.hbg+'">'+esc(c)+"<span>"+total+" wine"+(total>1?"s":"")+"</span></h3>";
+    Object.keys(regs).sort((a,b)=>regs[b].length-regs[a].length).forEach(r=>{
+      const ws=regs[r];const rated=ws.filter(w=>Number(w.myRating));
+      const types=[...new Set(ws.map(w=>w.type))];
+      h+='<button class="grow" data-region="'+esc(r)+'" data-country="'+esc(c==="Unspecified"?"":c)+'"><span class="swatch" aria-hidden="true" style="background:'+themeFor(ws[0]).hbg+'"></span><span class="name">'+esc(r||"Region not set")+'</span><span class="row">'+types.map(t=>'<span class="dot '+esc(t)+'" title="'+esc(TYPE_LABEL[t])+'"></span>').join("")+"</span>"+(rated.length?stars(Math.round(avg(rated.map(w=>Number(w.myRating)))*2)/2):"")+'<span class="count">'+ws.length+"</span></button>";
+    });
+    h+="</section>";
+  });
+  h+="</div>";
+  return h;
+}
+
+function renderPairings(){
+  const all=source();
+  const map={};all.forEach(w=>(w.pairings||[]).forEach(p=>(map[p]=map[p]||[]).push(w)));
+  const keys=[...new Set(PAIRINGS.concat(Object.keys(map)))].sort((a,b)=>((map[b]||[]).length-(map[a]||[]).length)||PAIRINGS.indexOf(a)-PAIRINGS.indexOf(b));
+  let h=renderAsk()+'<h2 class="section-title">Your pairings</h2>';
+  h+='<div class="pair-grid">';
+  keys.forEach(k=>{const ws=map[k]||[];const types=[...new Set(ws.map(w=>w.type))];
+    h+='<button class="ptile" data-pairing="'+esc(k)+'"'+(ws.length?"":' style="opacity:.55;border-left-color:var(--line)"')+'><b>'+esc(k)+"</b><span>"+(ws.length?ws.length+" wine"+(ws.length>1?"s":""):"None yet")+'</span><span class="dots">'+types.map(t=>'<span class="dot '+esc(t)+'"></span>').join("")+"</span></button>"});
+  h+="</div>";
+  return h;
+}
+
+function bindView(){
+  document.querySelectorAll("[data-type]").forEach(b=>b.onclick=()=>{state.type=b.dataset.type;render()});
+  const q=$("#q");if(q){q.oninput=()=>{state.q=q.value;const pos=q.selectionStart;render();const n=$("#q");n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}}
+  const s=$("#sort");if(s){s.value=state.sort;s.onchange=()=>{state.sort=s.value;render()}}
+  document.querySelectorAll("[data-clear]").forEach(b=>b.onclick=()=>{state[b.dataset.clear]=null;render()});
+  document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openDetail(b.dataset.open));
+  document.querySelectorAll("[data-region]").forEach(b=>b.onclick=()=>{state.region={region:b.dataset.region,country:b.dataset.country};state.pairing=null;state.type="all";state.q="";go("journal")});
+  document.querySelectorAll("[data-pairing]").forEach(b=>b.onclick=()=>{state.pairing=b.dataset.pairing;state.region=null;state.type="all";state.q="";state.sort="rating";go("journal")});
+}
+function go(v){state.view=v;render();window.scrollTo(0,0)}
+document.querySelectorAll("[data-nav]").forEach(b=>b.onclick=()=>{if(b.dataset.nav==="journal"&&state.view==="journal"){state.region=null;state.pairing=null;state.themeKey=null}go(b.dataset.nav)});
+$("#addBtn").onclick=()=>openForm(null);
+$("#sync").onclick=openDataSheet;
+
+/* ---------- sheet ---------- */
+let lastFocus=null;
+function openSheet(html,theme){if(DG){DG.dispose();DG=null}lastFocus=document.activeElement;const w=$("#sheetWrap");const sh=$("#sheet");sh.className="sheet"+(theme?" themed":"");sh.style.cssText=theme?themeVars(theme):"";sh.scrollTop=0;sh.innerHTML=html;w.classList.add("open");w.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";const x=$("#sheet .x");x&&x.addEventListener("click",closeSheet);setTimeout(()=>{const f=$("#sheet input, #sheet .x");f&&f.focus()},30)}
+function closeSheet(){if(DG){DG.dispose();DG=null}const w=$("#sheetWrap");w.classList.remove("open");w.setAttribute("aria-hidden","true");document.body.style.overflow="";lastFocus&&lastFocus.focus&&lastFocus.focus()}
+$("#sheetWrap").addEventListener("click",e=>{if(e.target.id==="sheetWrap")closeSheet()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#sheetWrap").classList.contains("open"))closeSheet()});
+
+function openDataSheet(){
+  const cloud=store.mode==="db";
+  let h='<div class="sheet-head"><h2 id="sheetTitle">Your data</h2><button class="x" aria-label="Close">×</button></div>';
+  h+='<p>'+(cloud?"Your journal is private to you and saved to your Claude account, so it follows you to any device where you're signed in.":"Your journal is private to you and saved in this browser on this device. Download a backup now and then so you never lose it.")+'</p>';
+  h+='<p class="meta">Nobody else who opens Cellar Book can see your wines, including the person who shared it with you. Nothing is sent to any server.</p>';
+  h+='<div class="actions" style="justify-content:flex-start;margin:16px 0 8px"><button class="btn primary" id="bkSave">Download backup</button><label class="btn ghost" for="bkFile" style="cursor:pointer">Restore from backup</label><input id="bkFile" type="file" accept=".json,application/json" style="position:absolute;opacity:0;width:1px;height:1px"></div><p class="meta" id="bkMsg" role="status"></p>';
+  openSheet(h);
+  const msg=t=>{$("#bkMsg").textContent=t};
+  $("#bkSave").onclick=async()=>{
+    const data=JSON.stringify({app:"Cellar Book",version:1,saved:new Date().toISOString(),wines:state.wines},null,1);
+    const name="cellar-book-backup-"+new Date().toISOString().slice(0,10)+".json";
+    if(!window.claude){try{const u=URL.createObjectURL(new Blob([data],{type:"application/json"}));const a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);msg("Backup saved to your downloads.");return}catch(_){}}
+    try{const dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null;if(!dl)throw 0;await dl.save({filename:name,data:new Blob([data],{type:"application/json"})});msg("Backup saved.")}
+    catch(e){try{await navigator.clipboard.writeText(data);msg("Couldn't save a file here, so the backup was copied. Paste it into a note to keep it.")}catch(_){msg("Couldn't save the backup here.")}}
+  };
+  $("#bkFile").onchange=async e=>{
+    const f=e.target.files&&e.target.files[0];if(!f)return;
+    try{const j=JSON.parse(await f.text());const list=Array.isArray(j)?j:j.wines;if(!Array.isArray(list))throw 0;
+      let n=0;for(const w of list){if(!w||typeof w!=="object"||!w.name)continue;const clean=Object.assign({},w);delete clean.example;clean.id=String(w.id||newId());await saveWine(clean);n++}
+      msg(n?"Restored "+n+" wine"+(n>1?"s":"")+".":"No wines found in that file.");
+    }catch(_){msg("That file isn't a Cellar Book backup.")}
+  };
+}
+function find(id){return source().find(w=>w.id===id)}
+
+function openDetail(id){
+  const w=find(id);if(!w)return;
+  const where=[w.region,w.country].filter(Boolean).join(", ");
+  const th=themeFor(w);
+  let h='<div class="th-band">'+ORN[th.orn](th)+'</div><div class="th-top"><div><div class="th-label"><i></i>'+esc(th.label)+'</div><h2 id="sheetTitle">'+esc(w.name||"Untitled wine")+'</h2>'+((w.producer||where)?'<div class="th-sub">'+esc([w.producer,where].filter(Boolean).join(" · "))+"</div>":"")+'</div><div class="dglass" id="dglass" title="Drag to spin"></div><button class="x" aria-label="Close">×</button></div><div class="th-body">';
+  h+='<div class="detail-hero">'+thumb(w)+'<div class="card-body"><div class="row"><span class="dot '+esc(w.type)+'"></span><b>'+esc(TYPE_LABEL[w.type]||"")+"</b>"+(w.vintage?" · "+esc(w.vintage):"")+"</div>"+'<div style="font-size:22px">'+stars(w.myRating)+'</div><div class="meta">Your rating: '+(Number(w.myRating)?w.myRating+" / 5":"not rated")+"</div>"+(w.buyAgain?'<span class="buy">✓ Would buy again</span>':"")+"</div></div>";
+  h+='<dl class="kv">'+(w.producer?"<dt>Producer</dt><dd>"+esc(w.producer)+"</dd>":"")+(w.grape?"<dt>Grape</dt><dd>"+esc(w.grape)+"</dd>":"")+(where?"<dt>Region</dt><dd>"+esc(where)+"</dd>":"")+(w.boughtAt?"<dt>Bought at</dt><dd>"+esc(w.boughtAt)+"</dd>":"")+(w.price?"<dt>Price</dt><dd>$"+esc(w.price)+"</dd>":"")+(w.tasted?"<dt>Tasted</dt><dd>"+esc(fmtDate(w.tasted))+"</dd>":"")+"</dl>";
+  const cs=(w.critics||[]).filter(c=>c.score);
+  h+='<div class="h4">Critic scores</div>'+(cs.length?'<div class="critics">'+cs.map(c=>'<div class="critic"><span>'+esc(c.by||"Critic")+"</span><b>"+esc(c.score)+" / "+esc(c.scale||100)+"</b></div>").join("")+"</div>":'<p class="meta">Not reviewed, or no scores added.</p>');
+  h+='<div class="h4">Pairs well with</div>'+((w.pairings||[]).length?'<div class="row">'+w.pairings.map(p=>'<span class="pair">'+esc(p)+"</span>").join("")+"</div>":'<p class="meta">No pairings added.</p>');
+  if(w.notes)h+='<div class="h4">Tasting notes</div><div class="notes">'+esc(w.notes)+"</div>";
+  if(w.example)h+='<p class="banner" style="margin-top:16px">This is an example entry. Add your own wine with the + Add button.</p>';
+  else h+='<div class="actions" style="margin-top:18px"><button class="btn danger" id="delBtn">Delete</button><button class="btn primary" id="editBtn">Edit</button></div><div id="confirmBox"></div>';
+  h+="</div>";
+  openSheet(h,th);
+  DG=createGlass($("#dglass"),{w:76,h:112,drag:true,light:true});if(DG)DG.set(w.type||"red");
+  if(!w.example){
+    $("#editBtn").onclick=()=>openForm(w);
+    $("#delBtn").onclick=()=>{$("#confirmBox").innerHTML='<div class="confirm"><b>Delete “'+esc(w.name)+'” from your journal?</b><div class="actions"><button class="btn ghost" id="cNo">Keep it</button><button class="btn danger" id="cYes">Delete</button></div></div>';$("#cNo").onclick=()=>$("#confirmBox").innerHTML="";$("#cYes").onclick=()=>{deleteWine(w.id);closeSheet();toast("Wine deleted")}};
+  }
+}
+function fmtDate(d){try{return new Date(d+"T12:00:00").toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"})}catch(e){return d}}
+
+function openForm(w,draft){
+  const isNew=!w;
+  const d=w?JSON.parse(JSON.stringify(w)):Object.assign({type:"red",myRating:0,critics:[],pairings:[],tasted:new Date().toISOString().slice(0,10)},draft||{});
+  const f={type:d.type||"red",rating:Number(d.myRating)||0,critics:(d.critics||[]).slice(),pairings:new Set(d.pairings||[]),photo:d.photo||""};
+  const countries=[...new Set(state.wines.map(x=>x.country).filter(Boolean).concat(["France","Italy","Spain","Portugal","Greece","Germany","Austria","USA","Argentina","Chile","Australia","New Zealand","South Africa"]))];
+  const regions=[...new Set(state.wines.map(x=>x.region).filter(Boolean))];
+  const grapes=[...new Set(state.wines.map(x=>x.grape).filter(Boolean))];
+  let h='<div class="sheet-head"><h2 id="sheetTitle">'+(isNew?"Add a wine":"Edit wine")+'</h2><button class="x" type="button" aria-label="Close">×</button></div>';
+  h+='<form id="wf" novalidate>';
+  h+='<div class="f"><label for="fName">Wine name</label><input id="fName" required placeholder="e.g. Château Musar Rouge" value="'+esc(d.name)+'"></div>';
+  h+='<div class="f"><span class="flabel">Type</span><div class="types" id="fTypes">'+TYPES.map(t=>'<button type="button" class="chip" data-t="'+t.k+'" aria-pressed="'+(f.type===t.k)+'"><span class="dot '+t.k+'"></span>'+t.l+"</button>").join("")+"</div></div>";
+  h+='<div class="grid2"><div class="f"><label for="fProducer">Producer</label><input id="fProducer" value="'+esc(d.producer)+'"></div><div class="f"><label for="fVintage">Vintage</label><input id="fVintage" inputmode="numeric" placeholder="2021 or NV" value="'+esc(d.vintage)+'"></div></div>';
+  h+='<div class="grid2"><div class="f"><label for="fCountry">Country</label><input id="fCountry" list="dlCountry" value="'+esc(d.country)+'"></div><div class="f"><label for="fRegion">Region</label><input id="fRegion" list="dlRegion" placeholder="e.g. Rioja, Napa Valley" value="'+esc(d.region)+'"></div></div>';
+  h+='<datalist id="dlCountry">'+countries.map(c=>'<option value="'+esc(c)+'">').join("")+'</datalist><datalist id="dlRegion">'+regions.map(c=>'<option value="'+esc(c)+'">').join("")+'</datalist><datalist id="dlGrape">'+grapes.map(c=>'<option value="'+esc(c)+'">').join("")+"</datalist>";
+  h+='<div class="f"><label for="fGrape">Grape(s)</label><input id="fGrape" list="dlGrape" placeholder="e.g. Tempranillo" value="'+esc(d.grape)+'"></div>';
+  h+='<div class="f"><label for="fTheme">Page theme</label><select id="fTheme"><option value="auto">Automatic, from the region</option>'+THEMES.map(t=>'<option value="'+t.key+'"'+(d.theme===t.key?" selected":"")+'>'+esc(t.label)+"</option>").join("")+'</select><span class="theme-pill" id="fThemeHint"></span></div>';
+  h+='<div class="f"><span class="flabel">Your rating</span><div class="star-input"><div class="si" id="fStars" role="group" aria-label="Your rating, tap twice for a half star"></div><output id="fRatingOut"></output><button type="button" class="link" id="fClearRating">Clear</button></div></div>';
+  h+='<div class="f"><span class="flabel">Critic scores</span><div id="fCritics" style="display:flex;flex-direction:column;gap:6px"></div><button type="button" class="link" id="fAddCritic">+ Add a critic score</button><datalist id="dlCritic">'+CRITICS.map(c=>'<option value="'+esc(c)+'">').join("")+"</datalist></div>";
+  h+='<div class="f"><span class="flabel">Pairs well with</span><div class="pchips" id="fPairs"></div><div style="display:flex;gap:6px;margin-top:4px"><input id="fPairNew" placeholder="Add your own, e.g. Moussaka" style="border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;flex:1"><button type="button" class="btn ghost" id="fPairAdd" style="padding:8px 14px">Add</button></div></div>';
+  h+='<div class="f"><label for="fNotes">Tasting notes</label><textarea id="fNotes" rows="3" placeholder="Aromas, taste, who you drank it with…">'+esc(d.notes)+"</textarea></div>";
+  const shops=[...new Set(state.wines.map(x=>x.boughtAt).filter(Boolean).concat(["Costco","Trader Joe's","Whole Foods","Total Wine","Wegmans","Safeway","Local wine shop","Restaurant","Gift"]))];
+  h+='<div class="f"><label for="fBought">Bought at</label><input id="fBought" list="dlBought" placeholder="e.g. Costco DC" value="'+esc(d.boughtAt)+'"><datalist id="dlBought">'+shops.map(x=>'<option value="'+esc(x)+'">').join("")+'</datalist></div>';
+  h+='<div class="grid2"><div class="f"><label for="fPrice">Price ($)</label><input id="fPrice" inputmode="decimal" value="'+esc(d.price)+'"></div><div class="f"><label for="fTasted">Date tasted</label><input id="fTasted" type="date" value="'+esc(d.tasted)+'"></div></div>';
+  h+='<div class="f"><span class="flabel">Label photo</span><div class="photo-pick"><span id="fPhotoPrev"></span><label class="btn ghost" for="fPhoto" style="cursor:pointer">Choose photo</label><input id="fPhoto" type="file" accept="image/*" style="position:absolute;opacity:0;width:1px;height:1px"><button type="button" class="link" id="fPhotoClear">Remove</button></div></div>';
+  h+='<label class="check"><input type="checkbox" id="fBuy"'+(d.buyAgain?" checked":"")+'> I would buy this again</label>';
+  h+='<div id="fErr" class="err"></div><div class="actions"><button type="button" class="btn ghost" id="fCancel">Cancel</button><button type="submit" class="btn primary">'+(isNew?"Save to journal":"Save changes")+"</button></div></form>";
+  openSheet(h);
+
+  $("#fTypes").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;f.type=b.dataset.t;document.querySelectorAll("#fTypes [data-t]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.t===f.type))};
+  function drawStars(){const el=$("#fStars");let s="";for(let i=1;i<=5;i++){const cls=f.rating>=i?"on":(f.rating>=i-.5?"half":"");s+='<button type="button" class="'+cls+'" data-s="'+i+'" aria-label="'+i+' stars">★</button>'}el.innerHTML=s;$("#fRatingOut").textContent=f.rating?f.rating:"–"}
+  $("#fStars").onclick=e=>{const b=e.target.closest("[data-s]");if(!b)return;const i=Number(b.dataset.s);f.rating=f.rating===i?i-.5:i;drawStars()};
+  $("#fClearRating").onclick=()=>{f.rating=0;drawStars()};
+  drawStars();
+
+  function drawCritics(){
+    $("#fCritics").innerHTML=f.critics.map((c,i)=>'<div class="crow"><input list="dlCritic" aria-label="Critic or publication" placeholder="Critic" data-ci="'+i+'" data-k="by" value="'+esc(c.by)+'"><input type="number" aria-label="Score" placeholder="Score" data-ci="'+i+'" data-k="score" value="'+esc(c.score)+'"><select aria-label="Scale" data-ci="'+i+'" data-k="scale"><option value="100"'+(c.scale!=20&&c.scale!=5?" selected":"")+'>/100</option><option value="20"'+(c.scale==20?" selected":"")+'>/20</option><option value="5"'+(c.scale==5?" selected":"")+'>/5</option></select><button type="button" class="del" data-cdel="'+i+'" aria-label="Remove score">×</button></div>').join("");
+  }
+  $("#fCritics").oninput=e=>{const t=e.target;if(t.dataset.ci==null)return;const c=f.critics[t.dataset.ci];c[t.dataset.k]=t.dataset.k==="by"?t.value:Number(t.value);if(t.dataset.k==="by"&&t.value==="Jancis Robinson"){c.scale=20;drawCritics()}};
+  $("#fCritics").onchange=$("#fCritics").oninput;
+  $("#fCritics").onclick=e=>{const b=e.target.closest("[data-cdel]");if(!b)return;f.critics.splice(Number(b.dataset.cdel),1);drawCritics()};
+  $("#fAddCritic").onclick=()=>{f.critics.push({by:"",score:"",scale:100});drawCritics();const ins=document.querySelectorAll('#fCritics input[data-k="by"]');ins[ins.length-1].focus()};
+  drawCritics();
+
+  function drawPairs(){const all=[...new Set(PAIRINGS.concat([...f.pairings]))];$("#fPairs").innerHTML=all.map(p=>'<button type="button" class="pchip" data-p="'+esc(p)+'" aria-pressed="'+f.pairings.has(p)+'">'+esc(p)+"</button>").join("")}
+  $("#fPairs").onclick=e=>{const b=e.target.closest("[data-p]");if(!b)return;const p=b.dataset.p;f.pairings.has(p)?f.pairings.delete(p):f.pairings.add(p);b.setAttribute("aria-pressed",f.pairings.has(p))};
+  const addPair=()=>{const v=$("#fPairNew").value.trim();if(!v)return;f.pairings.add(v.charAt(0).toUpperCase()+v.slice(1));$("#fPairNew").value="";drawPairs()};
+  $("#fPairAdd").onclick=addPair;
+  $("#fPairNew").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();addPair()}};
+  drawPairs();
+
+  function drawPhoto(){$("#fPhotoPrev").innerHTML=f.photo?'<img src="'+esc(f.photo)+'" alt="Label photo">':"";$("#fPhotoClear").style.display=f.photo?"":"none"}
+  $("#fPhoto").onchange=e=>{const file=e.target.files&&e.target.files[0];if(!file)return;shrink(file).then(u=>{f.photo=u;drawPhoto()}).catch(()=>toast("Couldn't read that photo"))};
+  $("#fPhotoClear").onclick=()=>{f.photo="";drawPhoto()};
+  drawPhoto();
+
+  function themeHint(){const sel=$("#fTheme").value;const t=sel==="auto"?(autoTheme({region:$("#fRegion").value,country:$("#fCountry").value,name:$("#fName").value})||DEFAULT_THEME):THEME_BY_KEY[sel];$("#fThemeHint").innerHTML='<span class="swatch" style="background:'+t.hbg+'"></span>'+(sel==="auto"?"Will look like: ":"")+esc(t.label)}
+  ["#fTheme","#fRegion","#fCountry","#fName"].forEach(s=>$(s).addEventListener("input",themeHint));$("#fTheme").addEventListener("change",themeHint);
+  themeHint();
+  $("#fCancel").onclick=closeSheet;
+  $("#wf").onsubmit=e=>{
+    e.preventDefault();
+    const name=$("#fName").value.trim();
+    if(!name){$("#fErr").textContent="Give the wine a name so you can find it later.";$("#fName").focus();return}
+    const wine={
+      id:w?w.id:newId(),name,type:f.type,
+      producer:$("#fProducer").value.trim(),vintage:$("#fVintage").value.trim(),
+      country:$("#fCountry").value.trim(),region:$("#fRegion").value.trim(),grape:$("#fGrape").value.trim(),
+      myRating:f.rating,
+      critics:f.critics.filter(c=>(c.by||"").trim()||Number(c.score)).map(c=>({by:(c.by||"").trim(),score:Number(c.score)||0,scale:Number(c.scale)||100})),
+      pairings:[...f.pairings],notes:$("#fNotes").value.trim(),price:$("#fPrice").value.trim(),boughtAt:$("#fBought").value.trim(),tasted:$("#fTasted").value,
+      buyAgain:$("#fBuy").checked,theme:$("#fTheme").value==="auto"?"":$("#fTheme").value,photo:f.photo,createdAt:w?(w.createdAt||Date.now()):Date.now()
+    };
+    saveWine(wine);closeSheet();toast(isNew?"Added to your journal":"Changes saved");
+  };
+}
+
+function shrink(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();r.onerror=rej;
+    r.onload=()=>{const img=new Image();img.onerror=rej;img.onload=()=>{
+      const max=420,sc=Math.min(1,max/Math.max(img.width,img.height));
+      const c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
+      c.getContext("2d").drawImage(img,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.72));
+    };img.src=r.result};
+    r.readAsDataURL(file);
+  });
+}
+initGlass();
+})();
+</script>
+</body>
+</html>
