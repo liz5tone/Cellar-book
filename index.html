@@ -291,6 +291,29 @@ form{display:flex;flex-direction:column;gap:14px}
 .shop-src a{color:var(--ink)}
 .add{padding:12px 14px!important}
 .navbtn{font-size:10.5px!important}
+.jbar{max-width:788px;margin:16px auto 0;display:flex;gap:8px;align-items:stretch}
+.jpick,.jshare{border:1px solid #3A3A37;border-radius:3px;background:transparent;color:var(--white);padding:8px 12px;min-height:40px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;display:inline-flex;align-items:center;gap:10px}
+.jpick{flex:1;min-width:0}
+.jpick .jlabel{color:#9A9A94;font-size:10.5px;letter-spacing:.18em}
+.jpick .jname{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.06em;text-transform:none;font-size:14px}
+.jpick.shared .jname::after{content:"  · Shared";color:var(--taxi);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.jshare{border-color:var(--taxi);color:var(--taxi)}
+.jlist{display:flex;flex-direction:column;gap:8px;margin:4px 0 18px}
+.jrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);border-radius:3px;background:var(--white);padding:12px 14px}
+.jrow[aria-current="true"]{border-color:var(--ink);box-shadow:inset 4px 0 0 var(--taxi)}
+.jrow-txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.jrow b{font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jrow small{color:var(--muted);font-size:12.5px}
+.jtick{font-weight:700}
+.jnew{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.jnew .f{width:100%}
+.jnew .btn{align-self:flex-start}
+.jmanage{border-top:1px solid var(--line);margin-top:18px;padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.sharecard{border:1px solid var(--line);border-radius:3px;background:var(--white);padding:14px 16px;margin:0 0 14px}
+.sharecard h3{margin:0 0 4px;font-size:18px}
+.sharecard p{margin:0 0 10px}
+.sendrow{justify-content:flex-start;margin:4px 0 8px}
+.sendrow .btn{padding:10px 14px;font-size:12px;text-decoration:none}
 </style>
 </head>
 <body>
@@ -302,7 +325,10 @@ form{display:flex;flex-direction:column;gap:14px}
         <button type="button" class="sync" id="sync" aria-label="Your data and backups">Loading…</button>
       </div>
       <div class="glass" id="glass" aria-hidden="true"></div>
-
+    </div>
+    <div class="jbar">
+      <button type="button" class="jpick" id="jPick" aria-label="Switch journal or make a new one"><span class="jlabel">Journal</span><span class="jname" id="jName">My cellar</span><span aria-hidden="true">▾</span></button>
+      <button type="button" class="jshare" id="jShare">Share</button>
     </div>
   </header>
 
@@ -441,32 +467,50 @@ const store={mode:"local",col:null,unsub:null};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
+/* ---------- journals ---------- */
+// Several journals can live on one phone. "main" is the original private journal.
+// A shared journal is also kept on the sharing server so everyone with its link sees the same wines.
+const SHARE_API=""; // the shared-journal server, e.g. "https://cellar-book-share.example.workers.dev" (see server/README.md)
+const APP_URL="https://liz5tone.github.io/Cellar-book/";
+const JR_KEY="cellarbook-journals-v1",CUR_KEY="cellarbook-current-v1";
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
+function lsDel(k){try{localStorage.removeItem(k)}catch(e){}}
+function loadJournals(){let a=null;try{a=JSON.parse(lsGet(JR_KEY))}catch(e){}if(!Array.isArray(a))a=[];a=a.filter(j=>j&&j.id);if(!a.some(j=>j.id==="main"))a.unshift({id:"main",name:"My cellar",kind:"local"});return a}
+const J={list:loadJournals(),cur:null,busy:false,again:false};
+J.cur=J.list.find(j=>j.id===lsGet(CUR_KEY))||J.list[0];
+function saveJournals(){lsSet(JR_KEY,JSON.stringify(J.list))}
+function lsKeyFor(j){return j.id==="main"?LS_KEY:"cellarbook-j-"+j.id}
+function isShared(j){return (j||J.cur).kind==="shared"}
+function cleanJName(n){return String(n||"").replace(/\s+/g," ").trim().slice(0,60)}
+
 /* ---------- storage ---------- */
-function readLocal(){try{const r=localStorage.getItem(LS_KEY);return r?JSON.parse(r):[]}catch(e){return []}}
-function writeLocal(){try{localStorage.setItem(LS_KEY,JSON.stringify(state.wines))}catch(e){}}
+function readLocal(j){try{const r=localStorage.getItem(lsKeyFor(j||J.cur));return r?JSON.parse(r):[]}catch(e){return []}}
+function writeLocal(){try{localStorage.setItem(lsKeyFor(J.cur),JSON.stringify(state.wines))}catch(e){}}
 function setSync(t){$("#sync").textContent=t+"  ›"}
+function syncLabel(){return isShared()?"Shared journal":"Saved on this device"}
 
 state.wines=readLocal();state.loaded=true;
-setSync("Saved on this device");
+setSync(syncLabel());
 render();
 
-function goLocal(){if(store.unsub){try{store.unsub()}catch(e){}store.unsub=null}store.mode="local";setSync("Saved on this device")}
-(async function connect(){
+function goLocal(){if(store.unsub){try{store.unsub()}catch(e){}store.unsub=null}store.mode="local";setSync(syncLabel())}
+async function connectAccount(){
   try{
-    if(!window.claude||!window.claude.use)return;
+    if(!window.claude||!window.claude.use||J.cur.id!=="main")return;
     const [db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
-    if(!db||!user)return;
+    if(!db||!user||J.cur.id!=="main")return;
     let canWrite=null;try{canWrite=user.can?await user.can("data.write"):null}catch(e){}
     if(canWrite===false)return; // visitors who can't save to their account keep the journal on this device
     const uid=await user.id();
-    if(!uid)return;
+    if(!uid||J.cur.id!=="main")return;
     store.col=db.doc("data/users/"+uid+"/journal").collection("wines");
     store.mode="db";
     setSync("Syncing…");
-    const timer=setTimeout(()=>setSync("Can't reach your account yet"),10000);
+    const timer=setTimeout(()=>{if(store.mode==="db")setSync("Can't reach your account yet")},10000);
     let first=true;
     store.unsub=store.col.onSnapshot(snap=>{
-      if(store.mode!=="db")return;
+      if(store.mode!=="db"||J.cur.id!=="main")return;
       const list=snap.docs.filter(d=>d.exists).map(d=>Object.assign({},d.data(),{id:d.id}));
       if(!snap.metadata.fromCache){
         clearTimeout(timer);setSync("Synced to your account");
@@ -483,7 +527,8 @@ function goLocal(){if(store.unsub){try{store.unsub()}catch(e){}store.unsub=null}
       render();
     },err=>{clearTimeout(timer);goLocal()});
   }catch(e){goLocal()}
-})();
+}
+connectAccount();
 
 function stripId(w){const o=Object.assign({},w);delete o.id;delete o.example;return o}
 function newId(){return "w"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
@@ -492,6 +537,7 @@ async function saveWine(w){
   const i=state.wines.findIndex(x=>x.id===w.id);
   if(i>=0)state.wines[i]=w;else state.wines.unshift(w);
   writeLocal();render();
+  if(isShared()){markPending(w.id);return}
   if(store.mode==="db"){
     try{await store.col.doc(w.id).set(stripId(w))}
     catch(e){if(e&&e.code==="invalid_argument"){goLocal();toast("Saved on this device")}else if(e&&e.code==="quota_exceeded")toast("Your journal is full. Remove a few photos or wines.");else toast("Saved on this device. Account sync failed.")}
@@ -499,8 +545,109 @@ async function saveWine(w){
 }
 async function deleteWine(id){
   state.wines=state.wines.filter(w=>w.id!==id);writeLocal();render();
+  if(isShared()){markPending(id);return}
   if(store.mode==="db"){try{await store.col.doc(id).delete()}catch(e){if(e&&e.code==="invalid_argument")goLocal()}}
 }
+
+/* ---------- shared journals ---------- */
+async function shareApi(j,path,opts){
+  opts=opts||{};
+  if(!SHARE_API)throw Object.assign(new Error("Shared journals aren't set up yet."),{status:0});
+  let r;
+  try{r=await fetch(SHARE_API+"/api/journals"+(j?"/"+j.sid:"")+(path||""),{method:opts.method||"GET",headers:Object.assign({"Content-Type":"application/json"},j?{"X-Journal-Key":j.key}:{}),body:opts.body,cache:"no-store"})}
+  catch(e){throw Object.assign(new Error("Can't reach the shared journal right now."),{status:0})}
+  let d=null;try{d=await r.json()}catch(e){}
+  if(!r.ok)throw Object.assign(new Error((d&&d.error)||"Can't reach the shared journal right now."),{status:r.status});
+  return d;
+}
+function markPending(id){const j=J.cur;j.pending=j.pending||{};j.pending[id]=1;saveJournals();syncShared(false)}
+async function pushPending(j){
+  const ids=Object.keys(j.pending||{});
+  for(const id of ids){
+    const w=(j===J.cur?state.wines:readLocal(j)).find(x=>x.id===id);
+    try{
+      if(w)await shareApi(j,"/wines/"+encodeURIComponent(id),{method:"PUT",body:JSON.stringify(stripId(w))});
+      else await shareApi(j,"/wines/"+encodeURIComponent(id),{method:"DELETE"});
+      delete j.pending[id];saveJournals();
+    }catch(e){
+      if(e.status===413||e.status===400){delete j.pending[id];saveJournals();toast(e.message)}
+      else throw e;
+    }
+  }
+}
+async function syncShared(full){
+  const j=J.cur;if(!isShared(j)||!SHARE_API)return;
+  if(J.busy){J.again=full?"full":(J.again||true);return}
+  J.busy=true;let ok=false;
+  try{
+    await pushPending(j);
+    const d=await shareApi(j,"?since="+(full||!j.since?0:j.since));
+    if(J.cur!==j)return;
+    const pend=j.pending||{};let list,changed=false;
+    if(full||!j.since){
+      const loc=new Map(state.wines.map(w=>[w.id,w]));
+      list=d.wines.filter(x=>!x.deleted&&x.wine&&!pend[x.id]).map(x=>Object.assign({},x.wine,{id:x.id}));
+      for(const id in pend){const w=loc.get(id);if(w)list.push(w)}
+      changed=JSON.stringify(list.map(w=>w.id).sort())!==JSON.stringify(state.wines.map(w=>w.id).sort())||d.wines.length>0;
+    }else{
+      list=state.wines.slice();
+      for(const x of d.wines){
+        if(pend[x.id])continue;
+        const i=list.findIndex(w=>w.id===x.id);
+        if(x.deleted){if(i>=0){list.splice(i,1);changed=true}}
+        else if(x.wine){const w=Object.assign({},x.wine,{id:x.id});if(i<0){list.unshift(w);changed=true}else if(JSON.stringify(list[i])!==JSON.stringify(w)){list[i]=w;changed=true}}
+      }
+    }
+    j.since=Math.max(0,d.now-5000); // small overlap so a save that lands mid-read is never missed
+    if(d.name&&d.name!==j.name){j.name=d.name;showJournalBar()}
+    saveJournals();
+    if(changed){state.wines=list;writeLocal();render()}
+    j.gone=false;setSync(Object.keys(j.pending||{}).length?"Shared · syncing…":"Shared · up to date");ok=true;
+  }catch(e){
+    if(J.cur===j){
+      if(e.status===404){j.gone=true;saveJournals();setSync("Shared link no longer works")}
+      else setSync("Shared · offline, saved here");
+    }
+  }finally{
+    J.busy=false;
+    const a=J.again;J.again=false;
+    if(J.cur===j&&!j.gone&&(a||(ok&&Object.keys(j.pending||{}).length)))setTimeout(()=>syncShared(a==="full"),400);
+  }
+}
+// Check shared journals for other people's changes while the app is open.
+setInterval(()=>{
+  if(document.visibilityState!=="visible"||!isShared())return;
+  const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))return; // don't redraw while someone is typing
+  syncShared(false);
+},20000);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&isShared())syncShared(false)});
+
+function switchJournal(id){
+  const j=J.list.find(x=>x.id===id);if(!j)return;
+  if(store.unsub){try{store.unsub()}catch(e){}store.unsub=null}
+  store.mode="local";
+  J.cur=j;lsSet(CUR_KEY,j.id);
+  state.wines=readLocal();state.region=null;state.pairing=null;state.themeKey=null;state.q="";state.type="all";
+  showJournalBar();setSync(j.gone?"Shared link no longer works":syncLabel());
+  if(state.view!=="journal")state.view="journal";
+  render();window.scrollTo(0,0);
+  if(j.id==="main")connectAccount();
+  if(isShared(j))syncShared(true);
+}
+function addJournal(j){J.list.push(j);saveJournals();switchJournal(j.id);return j}
+function newLocalJournal(name){return addJournal({id:"j"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:cleanJName(name)||"New journal",kind:"local"})}
+async function newSharedJournal(name,wines){
+  const d=await shareApi(null,"",{method:"POST",body:JSON.stringify({name:cleanJName(name)||"Shared cellar"})});
+  const j={id:"s"+d.id,name:cleanJName(name)||"Shared cellar",kind:"shared",sid:d.id,key:d.key,since:0,pending:{}};
+  const copy=(wines||[]).filter(w=>!w.example).map(w=>Object.assign({},w));
+  lsSet(lsKeyFor(j),JSON.stringify(copy));
+  copy.forEach(w=>{j.pending[w.id]=1});
+  return addJournal(j);
+}
+function shareLink(j){return APP_URL+"#join="+j.sid+"."+j.key+"&n="+encodeURIComponent(j.name)}
+function showJournalBar(){const n=$("#jName");if(n)n.textContent=J.cur.name;const p=$("#jPick");if(p)p.classList.toggle("shared",isShared())}
+showJournalBar();
+if(isShared())syncShared(true);
 
 /* ---------- helpers ---------- */
 function stars(r){r=Number(r)||0;let s="";for(let i=1;i<=5;i++){s+=r>=i?"★":(r>=i-.5?'<span class="halfstar">★</span>':'<span class="off">★</span>')}return '<span class="stars" aria-label="'+r+' of 5 stars">'+s+"</span>"}
@@ -970,6 +1117,8 @@ function go(v){state.view=v;render();window.scrollTo(0,0)}
 document.querySelectorAll("[data-nav]").forEach(b=>b.onclick=()=>{if(b.dataset.nav==="journal"&&state.view==="journal"){state.region=null;state.pairing=null;state.themeKey=null}go(b.dataset.nav)});
 $("#addBtn").onclick=()=>openForm(null);
 $("#sync").onclick=openDataSheet;
+$("#jPick").onclick=openJournals;
+$("#jShare").onclick=openShare;
 
 /* ---------- sheet ---------- */
 let lastFocus=null;
@@ -981,14 +1130,17 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#sheetWrap").cla
 function openDataSheet(){
   const cloud=store.mode==="db";
   let h='<div class="sheet-head"><h2 id="sheetTitle">Your data</h2><button class="x" aria-label="Close">×</button></div>';
-  h+='<p>'+(cloud?"Your journal is private to you and saved to your Claude account, so it follows you to any device where you're signed in.":"Your journal is private to you and saved in this browser on this device. Download a backup now and then so you never lose it.")+'</p>';
-  h+='<p class="meta">Nobody else who opens Cellar Book can see your wines, including the person who shared it with you. Nothing is sent to any server.</p>';
+  const shared=isShared();
+  h+='<p class="meta" style="margin:0 0 6px">Journal: <b>'+esc(J.cur.name)+'</b></p>';
+  if(shared)h+='<p>This is a shared journal. Everyone who has its link sees and edits these wines. They\'re kept on the Cellar Book sharing server, with a copy on this phone so you can read them offline.</p><p class="meta">Your other journals stay private. Download a backup now and then to keep your own copy.</p>';
+  else{h+='<p>'+(cloud?"Your journal is private to you and saved to your Claude account, so it follows you to any device where you're signed in.":"Your journal is private to you and saved in this browser on this device. Download a backup now and then so you never lose it.")+'</p>';
+  h+='<p class="meta">Nobody else who opens Cellar Book can see your wines, including the person who shared it with you. Nothing is sent to any server.</p>';}
   h+='<div class="actions" style="justify-content:flex-start;margin:16px 0 8px"><button class="btn primary" id="bkSave">Download backup</button><label class="btn ghost" for="bkFile" style="cursor:pointer">Restore from backup</label><input id="bkFile" type="file" accept=".json,application/json" style="position:absolute;opacity:0;width:1px;height:1px"></div><p class="meta" id="bkMsg" role="status"></p>';
   openSheet(h);
   const msg=t=>{$("#bkMsg").textContent=t};
   $("#bkSave").onclick=async()=>{
-    const data=JSON.stringify({app:"Cellar Book",version:1,saved:new Date().toISOString(),wines:state.wines},null,1);
-    const name="cellar-book-backup-"+new Date().toISOString().slice(0,10)+".json";
+    const data=JSON.stringify({app:"Cellar Book",version:1,journal:J.cur.name,saved:new Date().toISOString(),wines:state.wines},null,1);
+    const name="cellar-book-"+(J.cur.id==="main"?"backup":J.cur.name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"journal")+"-"+new Date().toISOString().slice(0,10)+".json";
     if(!window.claude){try{const u=URL.createObjectURL(new Blob([data],{type:"application/json"}));const a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);msg("Backup saved to your downloads.");return}catch(_){}}
     try{const dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null;if(!dl)throw 0;await dl.save({filename:name,data:new Blob([data],{type:"application/json"})});msg("Backup saved.")}
     catch(e){try{await navigator.clipboard.writeText(data);msg("Couldn't save a file here, so the backup was copied. Paste it into a note to keep it.")}catch(_){msg("Couldn't save the backup here.")}}
@@ -1001,6 +1153,88 @@ function openDataSheet(){
     }catch(_){msg("That file isn't a Cellar Book backup.")}
   };
 }
+/* ---------- journals sheet ---------- */
+function jCount(j){const n=(j===J.cur?state.wines:readLocal(j)).filter(w=>!w.example).length;return n+" wine"+(n===1?"":"s")}
+function openJournals(){
+  let h='<div class="sheet-head"><h2 id="sheetTitle">Your journals</h2><button class="x" aria-label="Close">×</button></div>';
+  h+='<div class="jlist" role="list">'+J.list.map(j=>'<button type="button" class="jrow" role="listitem" data-jsw="'+esc(j.id)+'" aria-current="'+(j===J.cur)+'"><span class="jrow-txt"><b>'+esc(j.name)+'</b><small>'+(isShared(j)?"Shared":"Private · only on this phone")+" · "+jCount(j)+'</small></span>'+(j===J.cur?'<span class="jtick" aria-label="Open now">✓</span>':"")+"</button>").join("")+"</div>";
+  h+='<form id="jNewForm" class="jnew"><div class="f"><label for="jNewName">New empty journal</label><input id="jNewName" maxlength="60" placeholder="e.g. Wines to try, Beach house"></div><button type="submit" class="btn primary">Create</button></form>';
+  h+='<div class="jmanage"><p class="meta" style="margin:0">Open now: <b>'+esc(J.cur.name)+'</b></p><div class="actions" style="justify-content:flex-start"><button type="button" class="btn ghost" id="jRename">Rename</button>'+(J.cur.id!=="main"?'<button type="button" class="btn danger" id="jRemove">Remove from this phone</button>':"")+'</div><p class="meta" id="jMsg" role="status"></p></div>';
+  openSheet(h);
+  document.querySelectorAll("[data-jsw]").forEach(b=>b.onclick=()=>{closeSheet();if(b.dataset.jsw!==J.cur.id){switchJournal(b.dataset.jsw);toast("Opened "+J.cur.name)}});
+  $("#jNewForm").onsubmit=e=>{e.preventDefault();const j=newLocalJournal($("#jNewName").value);closeSheet();toast("Created "+j.name)};
+  $("#jRename").onclick=async()=>{
+    const n=cleanJName(prompt("New name for this journal",J.cur.name));if(!n||n===J.cur.name)return;
+    const j=J.cur;
+    if(isShared(j)){try{await shareApi(j,"",{method:"PATCH",body:JSON.stringify({name:n})})}catch(e){$("#jMsg").textContent=e.message;return}}
+    j.name=n;saveJournals();showJournalBar();openJournals();
+  };
+  const rm=$("#jRemove");if(rm)rm.onclick=()=>{
+    const j=J.cur;
+    const ask=isShared(j)?"Remove “"+j.name+"” from this phone?\n\nThe shared journal stays for everyone else. You can rejoin with its link."
+      :"Delete “"+j.name+"” and its "+jCount(j)+" from this phone?\n\nThis can't be undone. Tap the status line under the logo to download a backup first if you want to keep them.";
+    if(!confirm(ask))return;
+    J.list=J.list.filter(x=>x!==j);saveJournals();lsDel(lsKeyFor(j));
+    closeSheet();switchJournal("main");toast("Removed "+j.name);
+  };
+}
+
+/* ---------- share sheet ---------- */
+function sendButtons(link,msg,subject){
+  const body=msg+" "+link;
+  return '<div class="actions sendrow">'+(navigator.share?'<button type="button" class="btn primary" data-share="'+esc(link)+'" data-msg="'+esc(msg)+'">Share…</button>':"")+
+    '<a class="btn ghost" href="sms:?&body='+encodeURIComponent(body)+'">Text it</a>'+
+    '<a class="btn ghost" href="mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body)+'">Email it</a>'+
+    '<button type="button" class="btn ghost" data-copy="'+esc(link)+'">Copy link</button></div>';
+}
+function bindSend(){
+  document.querySelectorAll("#sheet [data-copy]").forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);toast("Link copied")}catch(e){prompt("Copy this link",b.dataset.copy)}});
+  document.querySelectorAll("#sheet [data-share]").forEach(b=>b.onclick=async()=>{try{await navigator.share({title:"Cellar Book",text:b.dataset.msg,url:b.dataset.share})}catch(e){}});
+}
+function openShare(){
+  const j=J.cur;
+  let h='<div class="sheet-head"><h2 id="sheetTitle">Share</h2><button class="x" aria-label="Close">×</button></div>';
+  h+='<section class="sharecard"><h3>Send the app</h3><p>They get Cellar Book with a brand-new, empty journal of their own. They won\'t see any of your wines.</p>'+
+    sendButtons(APP_URL,"Here's Cellar Book, the wine journal app I use 🍷 It starts empty, just for you:","Cellar Book wine journal")+"</section>";
+  h+='<section class="sharecard"><h3>Shared journal</h3>';
+  if(isShared(j)&&!j.gone){
+    h+='<p>Everyone with this link sees <b>'+esc(j.name)+'</b> and can add, change and remove wines. Changes show up for everyone.</p>'+
+      sendButtons(shareLink(j),"Join our Cellar Book wine journal “"+j.name+"” 🍷","Our shared wine journal")+
+      '<p class="meta">Anyone with this link can see and edit this journal, so send it only to people you want in it.</p>';
+  }else if(!SHARE_API){
+    h+='<p>One journal that you and others keep together, like a family cellar. Everyone with the link sees the same wines.</p><p class="meta">Shared journals aren\'t switched on yet. They need a one-time setup of the sharing server.</p>';
+  }else{
+    h+='<p>One journal that you and others keep together, like a family cellar. Everyone with the link sees and adds to the same wines. <b>'+esc(j.name)+'</b> stays private.</p>'+
+      '<form id="shNew" class="jnew"><div class="f"><label for="shName">Name the shared journal</label><input id="shName" maxlength="60" value="Family cellar"></div><button type="submit" class="btn primary">Create &amp; get link</button></form>'+
+      (state.wines.filter(w=>!w.example).length?'<label class="check" style="margin-top:10px"><input type="checkbox" id="shCopy"> Start it with a copy of the '+jCount(j)+' in “'+esc(j.name)+'”</label>':"")+
+      '<p class="meta" id="shMsg" role="status"></p>';
+  }
+  h+="</section>";
+  openSheet(h);bindSend();
+  const f=$("#shNew");if(f)f.onsubmit=async e=>{
+    e.preventDefault();const btn=f.querySelector("button");btn.disabled=true;$("#shMsg").textContent="Creating…";
+    const c=$("#shCopy");
+    try{await newSharedJournal($("#shName").value,c&&c.checked?state.wines:[]);openShare();toast("Shared journal created")}
+    catch(err){btn.disabled=false;$("#shMsg").textContent=err.message}
+  };
+}
+
+/* ---------- joining a shared journal from a link ---------- */
+function checkJoinLink(){
+  const m=location.hash.match(/join=([A-Za-z0-9]{6,40})\.([A-Za-z0-9]{16,80})/);if(!m)return;
+  let name="Shared cellar";const n=location.hash.match(/[&#]n=([^&]*)/);if(n){try{name=cleanJName(decodeURIComponent(n[1]))||name}catch(e){}}
+  try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}
+  const ex=J.list.find(j=>j.sid===m[1]);
+  if(ex){if(ex.key!==m[2]){ex.key=m[2];ex.gone=false;saveJournals()}switchJournal(ex.id);toast("Opened "+ex.name);return}
+  let h='<div class="sheet-head"><h2 id="sheetTitle">Join “'+esc(name)+'”?</h2><button class="x" aria-label="Close">×</button></div>';
+  h+='<p>Someone invited you to a shared Cellar Book journal. Everyone in it sees and adds to the same wines.</p><p class="meta">It\'s added next to your own journals. Your private journal stays private.</p>';
+  h+='<div class="actions"><button type="button" class="btn ghost" id="joinNo">Not now</button><button type="button" class="btn primary" id="joinYes">Join</button></div>';
+  openSheet(h);
+  $("#joinNo").onclick=closeSheet;
+  $("#joinYes").onclick=()=>{closeSheet();addJournal({id:"s"+m[1],name,kind:"shared",sid:m[1],key:m[2],since:0,pending:{}});toast("Joined "+name)};
+}
+checkJoinLink();
+window.addEventListener("hashchange",checkJoinLink);
 function find(id){return source().find(w=>w.id===id)}
 
 function openDetail(id){
