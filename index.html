@@ -217,7 +217,7 @@ form{display:flex;flex-direction:column;gap:14px}
 .stat span{letter-spacing:.1em!important;font-size:10px!important;white-space:nowrap}
 .notes{border-radius:0!important}
 .tag-example{border-radius:0;letter-spacing:.14em}
-.glass{width:84px;height:124px;flex:0 0 auto;margin:-10px -6px -14px 0}
+.glass{width:110px;height:150px;flex:0 0 auto;margin:-22px -10px -18px 0}
 .glass canvas{display:block}
 .ask{background:var(--white);border:1px solid var(--line);border-top:3px solid var(--ink);padding:18px 16px;margin:20px 0 6px;display:flex;flex-direction:column;gap:12px}
 .ask-kicker{font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A6F3A}
@@ -260,7 +260,7 @@ form{display:flex;flex-direction:column;gap:14px}
 .rcard .stars{color:var(--rs)}
 .rcard .stars .halfstar{background:linear-gradient(90deg,var(--rs) 50%,var(--line) 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .rcard .meta{font-size:13px}
-.dglass{width:76px;height:112px;flex:0 0 auto;margin-top:-6px}
+.dglass{width:96px;height:136px;flex:0 0 auto;margin-top:-10px}
 .dglass canvas{display:block}
 .globe-box{background:#0B0B0B;margin:0 0 14px;padding:0 0 12px;overflow:hidden}
 .globe-wrap{position:relative;margin:0 auto;display:flex;justify-content:center}
@@ -314,6 +314,36 @@ form{display:flex;flex-direction:column;gap:14px}
 .sharecard p{margin:0 0 10px}
 .sendrow{justify-content:flex-start;margin:4px 0 8px}
 .sendrow .btn{padding:10px 14px;font-size:12px;text-decoration:none}
+/* calmer layout */
+.jhead{display:flex;flex-direction:column;gap:2px;margin:24px 0 14px}
+.jhead .section-title{margin:0}
+.summary{margin:0;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 14px;padding:0 16px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:transparent;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;white-space:nowrap}
+.chip .dot{width:9px;height:9px}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--white)}
+.toolbar{margin:0 0 14px}
+.search,.sort{border-color:transparent!important;background:var(--white)}
+.welcome{text-align:center;padding:56px 20px 40px;margin-top:8px}
+.welcome h2{font-family:var(--f-display);font-weight:400;font-size:36px;line-height:1.05;margin:0 0 10px;text-wrap:balance}
+.welcome p{color:var(--muted);margin:0 auto 22px;max-width:30ch}
+.empty{border:0!important;background:transparent!important;padding:28px 12px!important}
+.list{gap:16px}
+.card-band svg{height:58px!important}
+.card-main .thumb{margin-top:-30px!important;width:64px!important;height:86px!important}
+.rcard .score{border:0!important;background:transparent!important;padding:0!important;color:var(--muted);font-size:12.5px}
+.card.rcard{box-shadow:none!important}
+.card.rcard:hover{box-shadow:0 0 0 2px var(--rh)!important}
+.ptile{border-top-width:1px!important}
+.sitem{border:0!important;box-shadow:none!important}
+.sbar{width:4px!important}
+.skick{font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.sfoot{display:flex;justify-content:space-between;align-items:center;margin-top:2px}
+.sprice{font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.sadd2{border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:600}
+.sadd2:hover{border-color:var(--ink)}
+.shop-list{gap:10px!important}
 </style>
 </head>
 <body>
@@ -364,14 +394,6 @@ const PAIRINGS=["Brunch","Lunch","BBQ","Beef","Lamb","Pork","Poultry","Fish","Sh
 const CRITICS=["Wine Spectator","Wine Advocate (Parker)","James Suckling","Decanter","Wine Enthusiast","Vinous","Jancis Robinson","Jeb Dunnuck","Wine & Spirits","Sommelier / friend"];
 const LS_KEY="oinos-wines-v1";
 
-const EXAMPLES=[
-  {id:"ex1",example:true,name:"Kyma Estate Assyrtiko",producer:"Kyma Estate",vintage:"2022",type:"white",grape:"Assyrtiko",country:"Greece",region:"Santorini",myRating:4.5,critics:[{by:"Decanter",score:93,scale:100}],pairings:["Fish","Shellfish","Aperitif"],notes:"Lemon zest, flint and sea spray. Bone dry with a long saline finish.",price:"34",tasted:"2026-10-18",buyAgain:true,createdAt:4},
-  {id:"ex2",example:true,name:"Vallerosa Brunello di Montalcino",producer:"Vallerosa",vintage:"2018",type:"red",grape:"Sangiovese",country:"Italy",region:"Tuscany",myRating:4,critics:[{by:"Wine Spectator",score:94,scale:100},{by:"Jancis Robinson",score:17,scale:20}],pairings:["Beef","Lamb","Cheese"],notes:"Sour cherry, leather, dried herbs. Firm tannins, will keep improving.",price:"62",tasted:"2026-10-02",buyAgain:false,createdAt:3},
-  {id:"ex3",example:true,name:"Maison Lune Côtes de Provence",producer:"Maison Lune",vintage:"2024",type:"rose",grape:"Grenache, Cinsault",country:"France",region:"Provence",myRating:3.5,critics:[],pairings:["Aperitif","Fish","Vegetarian"],notes:"Pale onion skin. Strawberry and white peach, crisp.",price:"22",tasted:"2026-09-14",buyAgain:true,createdAt:2},
-  {id:"ex4",example:true,name:"Atelier Brut Réserve",producer:"Atelier",vintage:"NV",type:"sparkling",grape:"Chardonnay, Pinot Noir",country:"France",region:"Champagne",myRating:4.5,critics:[{by:"James Suckling",score:92,scale:100}],pairings:["Aperitif","Shellfish","Poultry"],notes:"Brioche, green apple, very fine bubbles.",price:"48",tasted:"2026-08-30",buyAgain:true,createdAt:1}
-];
-
-EXAMPLES.push({id:"ex5",example:true,name:"Su Nuraxi Cannonau di Sardegna",producer:"Su Nuraxi",vintage:"2021",type:"red",grape:"Cannonau",country:"Italy",region:"Sardegna",myRating:4,critics:[{by:"Vinous",score:91,scale:100}],pairings:["Lamb","Pork","Cheese"],notes:"Wild berries, myrtle and Mediterranean scrub. Warm, generous, soft tannins.",price:"26",tasted:"2026-10-25",buyAgain:true,createdAt:5});
 
 /* ---------- regional themes ---------- */
 let OID=0;
@@ -659,8 +681,7 @@ function thumb(w,cls){if(w.photo)return '<img class="'+(cls||"thumb")+'" src="'+
 function bottleSvg(t){const c=getComputedStyle(document.documentElement).getPropertyValue("--t-"+(t||"red")).trim()||"#7B1E33";return '<svg width="26" height="60" viewBox="0 0 26 60"><path d="M10 2h6v14c0 3 6 5 6 12v28a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V28c0-7 6-9 6-12z" fill="'+c+'" stroke="#0D2E73" stroke-opacity=".25"/><rect x="6" y="32" width="14" height="12" rx="1.5" fill="#fff" opacity=".9"/></svg>'}
 function avg(a){return a.length?a.reduce((s,x)=>s+x,0)/a.length:0}
 function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),2400)}
-function source(){return state.wines.length?state.wines:EXAMPLES}
-function isExampleMode(){return !state.wines.length}
+function source(){return state.wines}
 
 /* ---------- ask the sommelier (Claude) ---------- */
 var STORES=["Trader Joe's","Whole Foods","Total Wine","Costco","Any wine shop"];
@@ -742,67 +763,86 @@ function createGlass(el,o){
   try{
     const T3=window.THREE,W=o.w,H=o.h;
     const renderer=new T3.WebGLRenderer({antialias:true,alpha:true});
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,3));renderer.setSize(W,H);el.appendChild(renderer.domElement);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,3));renderer.setSize(W,H);renderer.localClippingEnabled=true;el.appendChild(renderer.domElement);
     const scene=new T3.Scene();
-    const cam=new T3.PerspectiveCamera(30,W/H,.1,50);cam.position.set(0,1.55,6.8);cam.lookAt(0,1.2,0);
-    scene.add(new T3.AmbientLight(0xffffff,.5));
+    // A little above the rim, looking down, so the wine's surface shows as it swirls.
+    const cam=new T3.PerspectiveCamera(30,W/H,.1,50);cam.position.set(0,2.85,6.3);cam.lookAt(0,1.28,0);
+    scene.add(new T3.AmbientLight(0xffffff,.55));
     const key=new T3.DirectionalLight(0xffffff,1.15);key.position.set(3,5,4);scene.add(key);
     const warm=new T3.PointLight(0xCBB07A,1.4,20);warm.position.set(-3,2,3);scene.add(warm);
     const V=(x,y)=>new T3.Vector2(x,y);
-    const glassMat=new T3.MeshPhongMaterial({color:o.light?0x9aa0a6:0xffffff,transparent:true,opacity:o.light?.32:.24,shininess:160,specular:0xffffff,side:T3.DoubleSide,depthWrite:false});
-    const wineMat=new T3.MeshPhongMaterial({color:0x6A1228,shininess:90,specular:0x553333,transparent:true,opacity:.93});
+    // The wine is a full bowl cut by a plane that stays level in the world and tilts as it sloshes.
+    const surface=new T3.Plane(new T3.Vector3(0,-1,0),1.6);
+    const glassMat=new T3.MeshPhongMaterial({color:o.light?0x9aa0a6:0xffffff,transparent:true,opacity:o.light?.22:.13,shininess:160,specular:0xffffff,side:T3.DoubleSide,depthWrite:false});
+    const wineMat=new T3.MeshPhongMaterial({color:0x6A1228,shininess:90,specular:0x664444,clippingPlanes:[surface]});
+    const topMat=new T3.MeshBasicMaterial({color:0x8A2A40,side:T3.BackSide,clippingPlanes:[surface]}); // inside walls seen through the cut read as the wine's surface
     const rimMat=new T3.MeshBasicMaterial({color:o.light?0x8a9096:0xffffff,transparent:true,opacity:.75});
-    function makeGlass(shellPts,rimY,rimR,winePts,pivotY){
+    function makeGlass(shellPts,rimY,rimR,winePts,level){
       const g=new T3.Group();
+      const wg=new T3.LatheGeometry(winePts,72);
+      g.add(new T3.Mesh(wg,wineMat),new T3.Mesh(wg,topMat));
       g.add(new T3.Mesh(new T3.LatheGeometry(shellPts,64),glassMat));
       const rim=new T3.Mesh(new T3.TorusGeometry(rimR,.012,8,64),rimMat);rim.rotation.x=Math.PI/2;rim.position.y=rimY;g.add(rim);
-      const pivot=new T3.Group();pivot.position.y=pivotY;
-      const wine=new T3.Mesh(new T3.LatheGeometry(winePts,64),wineMat);wine.position.y=-pivotY;pivot.add(wine);g.add(pivot);
-      g.userData.pivot=pivot;return g;
+      g.userData.level=level;g.userData.r=winePts.reduce((m,p)=>Math.max(m,p.x),0);return g;
     }
     const goblet=makeGlass([V(0,0),V(.55,0),V(.56,.03),V(.1,.07),V(.05,.18),V(.045,.95),V(.09,1.03),V(.36,1.16),V(.5,1.4),V(.55,1.7),V(.52,2.0),V(.47,2.25)],2.25,.47,
-      [V(0,1.07),V(.1,1.07),V(.34,1.19),V(.47,1.4),V(.515,1.62),V(0,1.62)],1.4);
+      [V(0,1.07),V(.1,1.07),V(.34,1.19),V(.48,1.4),V(.525,1.7),V(.5,1.98),V(0,1.98)],1.6);
     const flute=makeGlass([V(0,0),V(.42,0),V(.43,.03),V(.08,.07),V(.04,.18),V(.035,.9),V(.07,.97),V(.19,1.07),V(.26,1.3),V(.3,1.8),V(.31,2.25),V(.3,2.5)],2.5,.3,
-      [V(0,1.02),V(.08,1.02),V(.2,1.12),V(.25,1.32),V(.285,1.8),V(.29,2.08),V(0,2.08)],1.6);
+      [V(0,1.02),V(.08,1.02),V(.2,1.12),V(.25,1.32),V(.285,1.8),V(.295,2.3),V(0,2.3)],2.0);
     const port=makeGlass([V(0,0),V(.36,0),V(.37,.03),V(.07,.06),V(.04,.14),V(.035,.52),V(.07,.58),V(.22,.68),V(.31,.88),V(.33,1.08),V(.29,1.32),V(.25,1.46)],1.46,.25,
-      [V(0,.63),V(.08,.63),V(.23,.74),V(.3,.9),V(.315,1.04),V(0,1.04)],.85);
-    const foam=new T3.Mesh(new T3.CylinderGeometry(.29,.29,.05,48),new T3.MeshPhongMaterial({color:0xFFF8E6,shininess:30,transparent:true,opacity:.95}));foam.position.y=2.1;flute.add(foam);
+      [V(0,.63),V(.08,.63),V(.23,.74),V(.3,.9),V(.315,1.08),V(.28,1.3),V(0,1.3)],1.0);
     const bMat=new T3.MeshBasicMaterial({color:0xFFFFFF,transparent:true,opacity:.95});
     const bubbles=[];const streams=[[0,0],[.1,.05],[-.09,.07],[.05,-.11],[-.12,-.06],[.14,-.02]];
-    for(let i=0;i<42;i++){const s=streams[i%streams.length];const b=new T3.Mesh(new T3.SphereGeometry(.03+Math.random()*.016,8,8),bMat);b.userData={x:s[0],z:s[1],sp:.9+Math.random()*.6,w:Math.random()*6};b.position.set(s[0],1.08+Math.random()*1,s[1]);flute.add(b);bubbles.push(b)}
-    const spritz=[];for(let i=0;i<10;i++){const b=new T3.Mesh(new T3.SphereGeometry(.02,8,8),bMat);b.userData={a:Math.random()*Math.PI*2,r:.05+Math.random()*.25,sp:.25+Math.random()*.3};b.position.y=1.12+Math.random()*.45;goblet.add(b);spritz.push(b)}
+    for(let i=0;i<42;i++){const s=streams[i%streams.length];const b=new T3.Mesh(new T3.SphereGeometry(.03+Math.random()*.016,8,8),bMat);b.userData={x:s[0],z:s[1],sp:.9+Math.random()*.6,w:Math.random()*6};b.position.set(s[0],1.08+Math.random()*.85,s[1]);flute.add(b);bubbles.push(b)}
+    const spritz=[];for(let i=0;i<10;i++){const b=new T3.Mesh(new T3.SphereGeometry(.02,8,8),bMat);b.userData={a:Math.random()*Math.PI*2,r:.05+Math.random()*.25,sp:.25+Math.random()*.3};b.position.y=1.12+Math.random()*.4;goblet.add(b);spritz.push(b)}
     const holder=new T3.Group();holder.add(goblet,flute,port);scene.add(holder);
     const COL={red:0x6A1228,white:0xE6CF72,rose:0xF2909C,sparkling:0xF3DC8A,dessert:0x5A2A0E,orange:0xF07A1A,green:0xC9DE6E,na:0x8FC79E,all:0x6A1228};
-    const target=new T3.Color(COL.red);let mode="red";
+    const target=new T3.Color(COL.red),topTarget=new T3.Color(),WHITE=new T3.Color(0xffffff);let mode="red",cur=goblet;
     const still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let t=0,last=0,running=false,alive=true,dragging=false,lastX=0,vel=0;
+    // Swirl: the surface's tilt circles the bowl. energy is how hard it's swirling; it rises when the glass is touched and settles back to a gentle swirl.
+    const BASE=.13;let energy=still?0:.42,amp=energy,phase=0,nextNudge=8;
+    const n=new T3.Vector3(),p0=new T3.Vector3();
+    function setSurface(){
+      const lv=cur.userData.level;
+      const tx=Math.cos(phase)*amp+Math.sin(t*6.3)*amp*.12,tz=Math.sin(phase)*amp*.85;
+      n.set(tx,-1,tz).normalize();p0.set(0,lv,0);surface.setFromNormalAndCoplanarPoint(n,p0);
+    }
     function draw(){renderer.render(scene,cam)}
     function frame(now){
       if(!alive||document.hidden){running=false;return}
       const dt=Math.min(.05,(now-last)/1000||.016);last=now;t+=dt;
-      if(!dragging){holder.rotation.y+=dt*.5+vel;vel*=.92}
-      const pv=(mode==="sparkling"?flute:mode==="dessert"?port:goblet).userData.pivot;pv.rotation.z=Math.sin(t*1.3)*.04;pv.rotation.x=Math.cos(t*1.1)*.03;
-      wineMat.color.lerp(target,.08);
-      if(mode==="sparkling")bubbles.forEach(b=>{b.position.y+=dt*b.userData.sp;if(b.position.y>2.06)b.position.y=1.08;b.position.x=b.userData.x+Math.sin(t*3+b.userData.w)*.012;b.position.z=b.userData.z});
-      if(mode==="green")spritz.forEach(b=>{b.position.y+=dt*b.userData.sp;if(b.position.y>1.58)b.position.y=1.12;b.position.x=Math.cos(b.userData.a)*b.userData.r;b.position.z=Math.sin(b.userData.a)*b.userData.r});
+      if(!dragging){holder.rotation.y+=dt*.35+vel;vel*=.92}
+      if(o.nudge&&t>nextNudge){energy=Math.max(energy,.34);nextNudge=t+9}
+      energy=Math.max(BASE,energy-dt*.07);amp+=(energy-amp)*Math.min(1,dt*3);
+      phase+=dt*(2.2+amp*3);
+      setSurface();
+      wineMat.color.lerp(target,.08);topMat.color.lerp(topTarget,.08);
+      const top=cur.userData.level-.05;
+      if(mode==="sparkling")bubbles.forEach(b=>{b.position.y+=dt*b.userData.sp;if(b.position.y>top)b.position.y=1.08;b.position.x=b.userData.x+Math.sin(t*3+b.userData.w)*.012;b.position.z=b.userData.z});
+      if(mode==="green")spritz.forEach(b=>{b.position.y+=dt*b.userData.sp;if(b.position.y>1.52)b.position.y=1.12;b.position.x=Math.cos(b.userData.a)*b.userData.r;b.position.z=Math.sin(b.userData.a)*b.userData.r});
       draw();
       if(!still)requestAnimationFrame(frame);else running=false;
     }
     function kick(){if(alive&&!running){running=true;last=performance.now();requestAnimationFrame(frame)}}
     const onVis=()=>{if(!document.hidden)kick()};document.addEventListener("visibilitychange",onVis);
+    const splash=k=>{if(!still)energy=Math.min(.5,Math.max(energy,k))};
+    el.style.cursor="pointer";
+    el.addEventListener("pointerdown",e=>{splash(.46);if(o.drag){dragging=true;lastX=e.clientX;try{el.setPointerCapture(e.pointerId)}catch(_){}}});
     if(o.drag){
       el.style.touchAction="pan-y";el.style.cursor="grab";
-      el.addEventListener("pointerdown",e=>{dragging=true;lastX=e.clientX;try{el.setPointerCapture(e.pointerId)}catch(_){}});
-      el.addEventListener("pointermove",e=>{if(!dragging)return;const dx=e.clientX-lastX;lastX=e.clientX;holder.rotation.y+=dx*.025;vel=dx*.004;if(still)draw()});
+      el.addEventListener("pointermove",e=>{if(!dragging)return;const dx=e.clientX-lastX;lastX=e.clientX;holder.rotation.y+=dx*.025;vel=dx*.004;splash(energy+Math.abs(dx)*.006);if(still)draw()});
       const up=()=>{dragging=false};el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up);
     }
-    const api={set(type){mode=type;target.set(COL[type]||COL.red);flute.visible=type==="sparkling";port.visible=type==="dessert";goblet.visible=!flute.visible&&!port.visible;spritz.forEach(b=>b.visible=type==="green");if(still){wineMat.color.copy(target);draw()}},
+    const api={set(type){mode=type;target.set(COL[type]||COL.red);topTarget.copy(target).lerp(WHITE,type==="red"||type==="dessert"?.18:.3);
+        flute.visible=type==="sparkling";port.visible=type==="dessert";goblet.visible=!flute.visible&&!port.visible;cur=flute.visible?flute:port.visible?port:goblet;
+        spritz.forEach(b=>b.visible=type==="green");splash(.3);if(still){wineMat.color.copy(target);topMat.color.copy(topTarget);setSurface();draw()}},
       dispose(){alive=false;document.removeEventListener("visibilitychange",onVis);try{renderer.dispose();renderer.forceContextLoss&&renderer.forceContextLoss()}catch(_){}renderer.domElement.remove()}};
-    api.set("red");kick();if(still)draw();
+    api.set("red");energy=still?0:.42;setSurface();kick();if(still)draw();
     return api;
   }catch(e){el.style.display="none";return null}
 }
-function initGlass(){GL=createGlass(document.getElementById("glass"),{w:84,h:124});if(GL)GL.set(state.type)}
+function initGlass(){GL=createGlass(document.getElementById("glass"),{w:110,h:150,nudge:true});if(GL)GL.set(state.type)}
 
 /* ---------- zoomable world map of your regions (d3-geo) ---------- */
 var COORD={sardinia:[40.1,9],corsica:[42.1,9.1],israel:[32.8,35.3],virginia:[38,-78.5],napa:[38.5,-122.3],provence:[43.5,6],champagne:[49,4],spain:[42.4,-2.6],portugal:[41.2,-7.7],italy:[43.3,11.3],germany:[49.9,7],andes:[-33,-68.8],france:[44.8,-.6],aegean:[36.4,25.4],sicily:[37.7,15],australia:[-34.5,138.9],newzealand:[-41.5,173.9],southafrica:[-33.9,18.9],georgia:[41.9,45.8],hungary:[48.1,21.4],lebanon:[33.8,35.9],newyork:[42.6,-76.9],pnw:[45.3,-123.1],canada:[43.1,-79.2],adriatic:[43.2,16.6],uruguay:[-34.6,-56],mexico:[32.1,-116.6],england:[50.9,-.3]};
@@ -982,15 +1022,15 @@ var SHOP_SOURCES=[["Reverse Wine Snob: best Kirkland Signature wines","https://w
 var shop={store:"all",type:"all",q:""};
 function renderShop(){
   let h='<h2 class="section-title">Shop</h2><p class="shop-note">Bottles these stores regularly carry, picked from published reviews (November 2026). Prices are typical, and shelves change by state and season, so check your store.</p>';
-  h+='<div class="tgrid" role="group" aria-label="Store"><button class="tcell" data-store-f="all" aria-pressed="'+(shop.store==="all")+'">All stores<small>'+CATALOG.length+"</small></button>";
-  Object.keys(STORE_INFO).forEach(k=>{h+='<button class="tcell" data-store-f="'+k+'" aria-pressed="'+(shop.store===k)+'">'+esc(STORE_INFO[k].l)+"<small>"+CATALOG.filter(c=>c.s===k).length+"</small></button>"});
+  h+='<div class="chips" role="group" aria-label="Store"><button class="chip" data-store-f="all" aria-pressed="'+(shop.store==="all")+'">All stores</button>';
+  Object.keys(STORE_INFO).forEach(k=>{h+='<button class="chip" data-store-f="'+k+'" aria-pressed="'+(shop.store===k)+'">'+esc(STORE_INFO[k].l)+"</button>"});
   h+="</div>";
   h+='<div class="toolbar"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5A6784" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="shopQ" type="search" placeholder="Search" value="'+esc(shop.q)+'" aria-label="Search the store list"></label><select class="sort" id="shopType" aria-label="Wine type"><option value="all">All types</option>'+TYPES.map(t=>'<option value="'+t.k+'"'+(shop.type===t.k?" selected":"")+">"+t.l+"</option>").join("")+"</select></div>";
   if(shop.store!=="all")h+='<p class="shop-note"><b>'+esc(STORE_INFO[shop.store].l)+":</b> "+esc(STORE_INFO[shop.store].n)+"</p>";
   const q=shop.q.trim().toLowerCase();
   const list=CATALOG.filter(c=>(shop.store==="all"||c.s===shop.store)&&(shop.type==="all"||c.type===shop.type||(shop.type==="white"&&c.type==="green"))&&(!q||[c.name,c.grape,c.region,c.country,c.note,STORE_INFO[c.s].l].join(" ").toLowerCase().includes(q)));
   if(!list.length)h+='<div class="empty">Nothing matches. Try another store or type.</div>';
-  h+='<div class="shop-list">'+list.map(c=>{const t=themeFor(c);return '<article class="sitem"><div class="sbar" style="background:'+t.hbg+'"></div><div class="sbody"><div class="row"><span class="rtag" style="background:'+t.hbg+';color:'+t.hink+'">'+esc(t.label)+'</span><span class="spill">'+esc(STORE_INFO[c.s].l)+'</span></div><h4>'+esc(c.name)+'</h4><div class="meta"><span class="dot '+esc(c.type)+'" style="vertical-align:-1px;margin-right:6px"></span>'+esc([TYPE_LABEL[c.type],c.grape,c.region].filter(Boolean).join(" · "))+'</div><p class="snote">'+esc(c.note)+'</p><div class="row" style="justify-content:space-between"><span class="score">'+esc(c.price)+'</span><button type="button" class="btn ghost sadd" data-shopadd="'+c.id+'">+ Add to my book</button></div></div></article>'}).join("")+"</div>";
+  h+='<div class="shop-list">'+list.map(c=>{const t=themeFor(c);return '<article class="sitem"><div class="sbar" style="background:'+t.hbg+'"></div><div class="sbody"><div class="skick">'+esc(STORE_INFO[c.s].l)+'</div><h4>'+esc(c.name)+'</h4><div class="meta"><span class="dot '+esc(c.type)+'" style="vertical-align:-1px;margin-right:6px"></span>'+esc([TYPE_LABEL[c.type],c.grape,c.region].filter(Boolean).join(" · "))+'</div><p class="snote">'+esc(c.note)+'</p><div class="sfoot"><span class="sprice">'+esc(c.price)+'</span><button type="button" class="sadd2" data-shopadd="'+c.id+'" aria-label="Add '+esc(c.name)+' to my journal">+ Add</button></div></div></article>'}).join("")+"</div>";
   h+='<details class="more shop-src"><summary>Where this list comes from</summary><ul>'+SHOP_SOURCES.map(s=>'<li><a href="'+s[1]+'" target="_blank" rel="noopener">'+esc(s[0])+"</a></li>").join("")+"</ul></details>";
   return h;
 }
@@ -1016,7 +1056,10 @@ function renderStats(list){
   const rated=list.filter(w=>Number(w.myRating));
   const regions={};list.forEach(w=>{const t=autoTheme(w)||(w.theme&&THEME_BY_KEY[w.theme]);const k=t?t.label:(w.region||w.country);if(k)regions[k]=(regions[k]||0)+1});
   const top=Object.entries(regions).sort((a,b)=>b[1]-a[1])[0];
-  return '<div class="stats"><div class="stat"><b>'+list.length+'</b><span>wines</span></div><div class="stat"><b>'+(rated.length?avg(rated.map(w=>Number(w.myRating))).toFixed(1)+"★":"–")+'</b><span>avg rating</span></div><div class="stat"><b>'+esc(top?top[0]:"–")+'</b><span>top region</span></div></div>';
+  const bits=[list.length+" wine"+(list.length===1?"":"s")];
+  if(rated.length)bits.push(avg(rated.map(w=>Number(w.myRating))).toFixed(1)+"★ average");
+  if(top&&list.length>1)bits.push("mostly "+top[0]);
+  return '<p class="summary">'+bits.map(esc).join('<span aria-hidden="true"> · </span>')+"</p>";
 }
 
 function filtered(){
@@ -1039,19 +1082,23 @@ function filtered(){
 
 function renderJournal(){
   const all=source();
+  if(!all.length)return '<section class="welcome"><h2>'+esc(J.cur.name)+' is empty</h2><p>Log the bottles you open. Each one gets its region\'s colors and scenery.</p><button type="button" class="btn primary" data-addfirst>+ Add your first wine</button></section>';
   const list=filtered();
   const counts={};all.forEach(w=>{counts[w.type]=(counts[w.type]||0)+1;if(w.type==="green")counts.white=(counts.white||0)+1});
-  let h=renderStats(all);
-  h+='<h2 class="section-title">Your wines</h2>';
-  h+='<div class="tgrid" role="group" aria-label="Wine type"><button class="tcell" data-type="all" aria-pressed="'+(state.type==="all")+'"><span class="tdots"><span class="dot red"></span><span class="dot white"></span><span class="dot rose"></span></span>All<small>'+all.length+'</small></button>';
-  TYPES.forEach(t=>{h+='<button class="tcell" data-type="'+t.k+'" aria-pressed="'+(state.type===t.k)+'"><span class="dot '+t.k+'"></span>'+(t.s||t.l)+'<small>'+(counts[t.k]||0)+"</small></button>"});
-  h+="</div>";
-  h+='<div class="toolbar"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5A6784" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="q" type="search" placeholder="Search" value="'+esc(state.q)+'" aria-label="Search"></label>';
-  h+='<select class="sort" id="sort" aria-label="Sort"><option value="recent">Recent</option><option value="rating">My rating</option><option value="critic">Critic score</option><option value="vintage">Vintage</option></select></div>';
+  const used=TYPES.filter(t=>counts[t.k]);
+  let h='<div class="jhead"><h2 class="section-title">Your wines</h2>'+renderStats(all)+"</div>";
+  if(used.length>1){
+    h+='<div class="chips" role="group" aria-label="Wine type"><button class="chip" data-type="all" aria-pressed="'+(state.type==="all")+'">All</button>';
+    used.forEach(t=>{h+='<button class="chip" data-type="'+t.k+'" aria-pressed="'+(state.type===t.k)+'"><span class="dot '+t.k+'"></span>'+(t.s||t.l)+"</button>"});
+    h+="</div>";
+  }
+  if(all.length>5){
+    h+='<div class="toolbar"><label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A8A85" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="q" type="search" placeholder="Search" value="'+esc(state.q)+'" aria-label="Search"></label>';
+    h+='<select class="sort" id="sort" aria-label="Sort"><option value="recent">Recent</option><option value="rating">My rating</option><option value="critic">Critic score</option><option value="vintage">Vintage</option></select></div>';
+  }
   if(state.region)h+='<div class="active-filter">Region: '+esc(state.region.region||"Unspecified")+", "+esc(state.region.country||"")+'<button data-clear="region">Clear</button></div>';
   if(state.pairing)h+='<div class="active-filter">Pairs with: '+esc(state.pairing)+'<button data-clear="pairing">Clear</button></div>';
   if(state.themeKey&&THEME_BY_KEY[state.themeKey])h+='<div class="active-filter">Region: '+esc(THEME_BY_KEY[state.themeKey].label)+'<button data-clear="themeKey">Clear</button></div>';
-  if(isExampleMode())h+='<div class="banner">Examples. Tap <b>+ Add</b> to start your own.</div>';
   if(!list.length)h+='<div class="empty">No wines match. Try another type or clear the search.</div>';
   else h+='<div class="list">'+list.map(cardHtml).join("")+"</div>";
   return h;
@@ -1061,7 +1108,7 @@ function cardHtml(w){
   const c=bestCritic(w),t=themeFor(w);
   const place=[w.region,w.country].filter(Boolean).join(", ");
   return '<button class="card rcard" data-open="'+esc(w.id)+'" style="--rb:'+t.bg+';--rh:'+t.hbg+';--rk:'+t.hink+';--rs:'+t.star+'">'+
-    '<div class="card-band">'+ORN[t.orn](t)+'<span class="card-label">'+esc(t.label)+'</span></div>'+
+    '<div class="card-band">'+ORN[t.orn](t)+'</div>'+
     '<div class="card-main">'+thumb(w)+
     '<div class="card-body"><h3>'+esc(w.name||"Untitled wine")+(w.vintage?' <span class="vin">'+esc(w.vintage)+"</span>":"")+"</h3>"+
     '<div class="meta"><span class="dot '+esc(w.type||"red")+'" style="vertical-align:-1px;margin-right:6px"></span>'+esc([TYPE_LABEL[w.type],place].filter(Boolean).join(" · "))+"</div>"+
@@ -1074,7 +1121,8 @@ function renderRegions(){
   const byC={};
   all.forEach(w=>{const c=w.country||"Unspecified";const r=w.region||"";(byC[c]=byC[c]||{});(byC[c][r]=byC[c][r]||[]).push(w)});
   const countries=Object.keys(byC).sort((a,b)=>Object.values(byC[b]).flat().length-Object.values(byC[a]).flat().length);
-  let h=renderStats(all)+'<h2 class="section-title">Regions</h2>';
+  let h='<h2 class="section-title">Regions</h2>';
+  if(!all.length)return h+'<div class="empty">Your regions show up here, on a world map, once you add wines.</div>';
   h+='<div class="globe-box" id="globeBox"></div>';
   h+='<div class="groups">';
   countries.forEach(c=>{
@@ -1095,11 +1143,12 @@ function renderRegions(){
 function renderPairings(){
   const all=source();
   const map={};all.forEach(w=>(w.pairings||[]).forEach(p=>(map[p]=map[p]||[]).push(w)));
-  const keys=[...new Set(PAIRINGS.concat(Object.keys(map)))].sort((a,b)=>((map[b]||[]).length-(map[a]||[]).length)||PAIRINGS.indexOf(a)-PAIRINGS.indexOf(b));
+  const keys=Object.keys(map).sort((a,b)=>((map[b]||[]).length-(map[a]||[]).length)||PAIRINGS.indexOf(a)-PAIRINGS.indexOf(b));
   let h=renderAsk()+'<h2 class="section-title">Your pairings</h2>';
+  if(!keys.length)return h+'<div class="empty">Tag a wine with what you ate (Pasta, Cheese, BBQ…) and your pairings show up here.</div>';
   h+='<div class="pair-grid">';
   keys.forEach(k=>{const ws=map[k]||[];const types=[...new Set(ws.map(w=>w.type))];
-    h+='<button class="ptile" data-pairing="'+esc(k)+'"'+(ws.length?"":' style="opacity:.55;border-left-color:var(--line)"')+'><b>'+esc(k)+"</b><span>"+(ws.length?ws.length+" wine"+(ws.length>1?"s":""):"None yet")+'</span><span class="dots">'+types.map(t=>'<span class="dot '+esc(t)+'"></span>').join("")+"</span></button>"});
+    h+='<button class="ptile" data-pairing="'+esc(k)+'"'+""+'><b>'+esc(k)+"</b><span>"+ws.length+" wine"+(ws.length>1?"s":"")+'</span><span class="dots">'+types.map(t=>'<span class="dot '+esc(t)+'"></span>').join("")+"</span></button>"});
   h+="</div>";
   return h;
 }
@@ -1110,6 +1159,7 @@ function bindView(){
   const s=$("#sort");if(s){s.value=state.sort;s.onchange=()=>{state.sort=s.value;render()}}
   document.querySelectorAll("[data-clear]").forEach(b=>b.onclick=()=>{state[b.dataset.clear]=null;render()});
   document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openDetail(b.dataset.open));
+  document.querySelectorAll("[data-addfirst]").forEach(b=>b.onclick=()=>openForm(null));
   document.querySelectorAll("[data-region]").forEach(b=>b.onclick=()=>{state.region={region:b.dataset.region,country:b.dataset.country};state.pairing=null;state.type="all";state.q="";go("journal")});
   document.querySelectorAll("[data-pairing]").forEach(b=>b.onclick=()=>{state.pairing=b.dataset.pairing;state.region=null;state.type="all";state.q="";state.sort="rating";go("journal")});
 }
@@ -1248,11 +1298,10 @@ function openDetail(id){
   h+='<div class="h4">Critic scores</div>'+(cs.length?'<div class="critics">'+cs.map(c=>'<div class="critic"><span>'+esc(c.by||"Critic")+"</span><b>"+esc(c.score)+" / "+esc(c.scale||100)+"</b></div>").join("")+"</div>":'<p class="meta">Not reviewed, or no scores added.</p>');
   h+='<div class="h4">Pairs well with</div>'+((w.pairings||[]).length?'<div class="row">'+w.pairings.map(p=>'<span class="pair">'+esc(p)+"</span>").join("")+"</div>":'<p class="meta">No pairings added.</p>');
   if(w.notes)h+='<div class="h4">Tasting notes</div><div class="notes">'+esc(w.notes)+"</div>";
-  if(w.example)h+='<p class="banner" style="margin-top:16px">This is an example entry. Add your own wine with the + Add button.</p>';
   else h+='<div class="actions" style="margin-top:18px"><button class="btn danger" id="delBtn">Delete</button><button class="btn primary" id="editBtn">Edit</button></div><div id="confirmBox"></div>';
   h+="</div>";
   openSheet(h,th);
-  DG=createGlass($("#dglass"),{w:76,h:112,drag:true,light:true});if(DG)DG.set(w.type||"red");
+  DG=createGlass($("#dglass"),{w:96,h:136,drag:true,light:true});if(DG)DG.set(w.type||"red");
   if(!w.example){
     $("#editBtn").onclick=()=>openForm(w);
     $("#delBtn").onclick=()=>{$("#confirmBox").innerHTML='<div class="confirm"><b>Delete “'+esc(w.name)+'” from your journal?</b><div class="actions"><button class="btn ghost" id="cNo">Keep it</button><button class="btn danger" id="cYes">Delete</button></div></div>';$("#cNo").onclick=()=>$("#confirmBox").innerHTML="";$("#cYes").onclick=()=>{deleteWine(w.id);closeSheet();toast("Wine deleted")}};

@@ -5,4 +5,4 @@ compatibility_date = "2026-11-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "cellar-book-share-db"
-database_id = "REPLACE_WITH_DATABASE_ID"
+database_id = "6ee823b8-677f-4653-ab6d-6edf47533e6a"
